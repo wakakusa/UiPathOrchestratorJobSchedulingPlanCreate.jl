@@ -5,6 +5,9 @@ makedocs(;
     format=Documenter.HTML(),
     pages=[
         "Home" => "index.md",
+        "Getting Started" => "getting_started.md",
+        "API" => "api.md",
+        "Excel" => "excel.md",
     ],
     repo="https://github.com/wakakusa/UiPathOrchestratorJobSchedulingPlanCreate.jl/blob/{commit}{path}#L{line}",
     sitename="UiPathOrchestratorJobSchedulingPlanCreate.jl",
