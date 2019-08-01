@@ -34,5 +34,5 @@ function uipathorchestratorschedulrecreate(ExcelFilePath::String,parameters::Str
 end
 
 export uipathorchestratorschedulrecreate,readprerequisite,uipathorchestratorschedulreadjustment,adjustedresultcheck
-export exportplan,plotplan,plotplan1,plotplan2
+export exportplan,plotplanmaster,plotplangr,plotplanplotlyjs
 end # module
