@@ -8,6 +8,7 @@ module UiPathOrchestratorJobSchedulingPlanCreate
   using GR
   using PlotlyJS
 
+include("input.jl")
 include("core.jl")
 include("output.jl")
 
