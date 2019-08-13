@@ -6,8 +6,9 @@ using UiPathOrchestratorJobSchedulingPlanCreate
 @testset "UiPathOrchestratorJobSchedulingPlanCreate.jl" begin
     # Write your own tests here.
     jobname=Array{Any}(["スケジュール1","スケジュール2","スケジュール3","スケジュール4","スケジュール5","スケジュール6","スケジュール7","スケジュール8","スケジュール9","スケジュール10"])
-    runtime=Array{Any}([30,60,15,15,30,45,30,15,60,30])
+    runtime=Array{Any}([30,60,15,30,60,45,30,15,60,30])
     Specifiedtime=Array{Any}([true,true,true,true,true,false,false,false,false,false])
+#    Specifiedtime=Array{Any}([1,1,1,1,1,0,0,0,0,0])
     JobStartTime=Array{Any}(["0:30","0:45","0:15","0:00","1:00",missing,missing,missing,missing,missing])
     JobEndTime=Array{Any}(["1:00","1:45","0:30","0:30","2:00",missing,missing,missing,missing,missing])
 #   0:00
@@ -38,7 +39,8 @@ using UiPathOrchestratorJobSchedulingPlanCreate
 
     names!(schedule,names(scheduleplan))
     @test scheduleplan[1:5,1:5] == schedule[1:5,1:5]
-    @test scheduleplan[1,8:9] == schedule[1,8:9]
+    @test scheduleplan[1,8] == schedule[1,8]
+    @test scheduleplan[1,9] == schedule[1,9]
     @test (robotn,run_unit_time,jobn,timen) == (6,15,10,9)
     
     output=DataFrames.DataFrame(XLSX.readtable(OutputFilePath, "REPORT_jobplan")...)

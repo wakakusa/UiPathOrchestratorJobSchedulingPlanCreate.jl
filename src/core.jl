@@ -1,10 +1,10 @@
 function uipathorchestratorschedulreadjustment(scheduleplan::DataFrame,robotn::Int,run_unit_time::Int,jobn::Int,timen::Int)
 ## 数理モデル
-  m1=JuMP.Model( with_optimizer(Cbc.Optimizer ))
+  m1=JuMP.Model(with_optimizer(Ipopt.Optimizer))
 
   ## 変数
- JuMP. @variable(m1, 0<=s[1:jobn,1:timen] <=1,Bin ) #ジョブ毎のコマ割りごとに実行有無を表示
- JuMP.@variable(m1, 0<=r[1:robotn,1:timen,1:jobn] <=1,Bin ) #ロボット毎のコマ割りごとに実行有無を表示
+ JuMP. @variable(m1, 0<=s[1:jobn,1:timen] <=1 ) #ジョブ毎のコマ割りごとに実行有無を表示
+ JuMP.@variable(m1, 0<=r[1:robotn,1:timen,1:jobn] <=1 ) #ロボット毎のコマ割りごとに実行有無を表示
 
   ## 定数
    runtime=zeros(Int,jobn,1) #ジョブ毎の実行時間
@@ -37,13 +37,13 @@ function uipathorchestratorschedulreadjustment(scheduleplan::DataFrame,robotn::I
   for i in 1:jobn
     flag =true
     if( convert(Bool,scheduleplan[i,:Specifiedtime]) )
-    for j in 6:6+timen-1
-      if(typeof(scheduleplan[i,j] ) != Missing && flag)
-        index=j-5
-        JuMP.@constraint(m1, s[i,index:index+runtime[i]-1] .== 1 )
-         flag=false
+      for j in 6:6+timen-1
+        if(typeof(scheduleplan[i,j] ) != Missing && flag)
+          index=j-5
+          JuMP.@constraint(m1, s[i,index:index+runtime[i]-1] .== 1 )
+           flag=false
+        end
       end
-    end
     end
   end
 
@@ -58,35 +58,28 @@ function uipathorchestratorschedulreadjustment(scheduleplan::DataFrame,robotn::I
   end
 
   ### ジョブ連続実行制限
-  for i in 1:jobn
+  #### 連続性をチェックするための関数を定義
+  function ContinuousOperation(x...) 
     sigma=0
-    flag=true
-    for j in 1:timen
-      if(s[i,j]==1 && flag)
-        sigma=sum(s[i,j:j+runtime[i]-1])
-        flag=false
-      end
+    for i in 1:length(x)-1
+        sigma=sigma+x[i]*x[i+1]     
     end
-    JuMP.@constraint(m1,sigma==runtime[i])
+    return sigma
   end
 
+  register(m1, :ContinuousOperation, size(s)[2], ContinuousOperation; autodiff = true)
+
+  for i in 1:jobn
+    x=s[i,1:timen]
+    @constraint(m1,sum(ContinuousOperation(x...))==runtime[i]-1)
+  end
+  
   ## ソルバーの実行
   status = JuMP.optimize!(m1)
 
   ## スケジュール案表示
   plan=zeros(Int,jobn,timen)
-
-  for i in 1:jobn
-    temp=sort(JuMP.value.(s[i,1:timen]) ,rev=true)[1:runtime[i]]
-
-    for j in 1:timen
-      for k in 1:runtime[i]
-        if( JuMP.value.(s[i,j])==temp[k])
-          plan[i,j]=1
-        end
-     end
-    end
-  end
+  plan=map(Int,map(round,JuMP.value.(s)))
 
   return plan,r,runtime
 end

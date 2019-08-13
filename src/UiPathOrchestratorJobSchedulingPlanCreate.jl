@@ -1,7 +1,7 @@
 module UiPathOrchestratorJobSchedulingPlanCreate
   using LinearAlgebra
   using JuMP
-  using Cbc
+  using Ipopt
   using XLSX
   using DataFrames
   using Plots

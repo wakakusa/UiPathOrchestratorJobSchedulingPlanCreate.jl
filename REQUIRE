@@ -1,7 +1,7 @@
 julia
 LinearAlgebra
 JuMP
-Cbc
+Ipopt
 XLSX
 DataFrames
 Blink
