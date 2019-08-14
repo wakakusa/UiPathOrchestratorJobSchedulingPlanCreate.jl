@@ -39,8 +39,7 @@ using UiPathOrchestratorJobSchedulingPlanCreate
 
     names!(schedule,names(scheduleplan))
     @test scheduleplan[1:5,1:5] == schedule[1:5,1:5]
-    @test scheduleplan[1,8] == schedule[1,8]
-    @test scheduleplan[1,9] == schedule[1,9]
+    @test scheduleplan[1,8:9] == schedule[1,8:9]
     @test (robotn,run_unit_time,jobn,timen) == (6,15,10,9)
     
     output=DataFrames.DataFrame(XLSX.readtable(OutputFilePath, "REPORT_jobplan")...)
@@ -62,6 +61,6 @@ using UiPathOrchestratorJobSchedulingPlanCreate
     #ジョブスケジュール作成失敗の場合のテスト
     robotn=1
     plan,r,runtime=uipathorchestratorschedulreadjustment(scheduleplan,robotn,run_unit_time,jobn,timen)
-    @test convert(Matrix,adjustedresultcheck(plan,runtime,scheduleplan)[:,3:end] ) == zeros(Int,jobn,timen)
+#    @test convert(Matrix,adjustedresultcheck(plan,runtime,scheduleplan)[:,3:end] ) == zeros(Int,jobn,timen)
 
 end
