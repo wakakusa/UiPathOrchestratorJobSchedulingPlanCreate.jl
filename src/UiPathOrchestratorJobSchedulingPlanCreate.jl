@@ -15,7 +15,7 @@ include("output.jl")
 function uipathorchestratorschedulrecreate(ExcelFilePath::String,parameters::String,schedule::String;planexport::Bool=false,ExportExcelFilePath::String="",plotengine="PlotlyJS")
   scheduleplan,robotn,run_unit_time,jobn,timen=readprerequisite(ExcelFilePath,parameters,schedule)
   plan,r,runtime=uipathorchestratorschedulreadjustment(scheduleplan,robotn,run_unit_time,jobn,timen)
-  plan=adjustedresultcheck(plan,runtime,scheduleplan)
+  plan=adjustedresultcheck(plan,runtime,scheduleplan,robotn,jobn,timen)
 
   if(plotengine=="PlotlyJS")
     plotplanplotlyjs(plan)
@@ -34,6 +34,6 @@ function uipathorchestratorschedulrecreate(ExcelFilePath::String,parameters::Str
 
 end
 
-export uipathorchestratorschedulrecreate,readprerequisite,uipathorchestratorschedulreadjustment,adjustedresultcheck
+export uipathorchestratorschedulrecreate,readprerequisite,uipathorchestratorschedulreadjustment,adjustedresultcheck,ContinuousOperation
 export exportplan,plotplanmaster,plotplangr,plotplanplotlyjs
 end # module

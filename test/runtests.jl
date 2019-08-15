@@ -44,7 +44,7 @@ using UiPathOrchestratorJobSchedulingPlanCreate
     
     output=DataFrames.DataFrame(XLSX.readtable(OutputFilePath, "REPORT_jobplan")...)
     plan,r,runtime=uipathorchestratorschedulreadjustment(scheduleplan,robotn,run_unit_time,jobn,timen)
-    plan=adjustedresultcheck(plan,runtime,scheduleplan)
+    plan=adjustedresultcheck(plan,runtime,scheduleplan,robotn,jobn,timen)
     @test plan == output
     @test uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="off") == output
     @test uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="GR") == output

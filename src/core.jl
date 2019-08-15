@@ -1,3 +1,12 @@
+# 処理時間が連続しているか確認
+function ContinuousOperation(x...) 
+  sigma=0
+  for i in 1:length(x)-1
+      sigma=sigma+x[i]*x[i+1]     
+  end
+  return sigma
+end
+
 function uipathorchestratorschedulreadjustment(scheduleplan::DataFrame,robotn::Int,run_unit_time::Int,jobn::Int,timen::Int)
 ## 数理モデル
   m1=JuMP.Model(with_optimizer(Ipopt.Optimizer))
@@ -40,38 +49,36 @@ function uipathorchestratorschedulreadjustment(scheduleplan::DataFrame,robotn::I
       for j in 6:6+timen-1
         if(typeof(scheduleplan[i,j] ) != Missing && flag)
           index=j-5
-          JuMP.@constraint(m1, s[i,index:index+runtime[i]-1] .== 1 )
+          JuMP.@constraint(m1, s[i,index:index+runtime[i]-1] .== 1.0 )
            flag=false
-        end
+        end  #### 連続性をチェックするための関数を定義
+        #  function ContinuousOperation(x...) 
+        #    sigma=0
+        #    for i in 1:length(x)-1
+        #        sigma=sigma+x[i]*x[i+1]     
+        #    end
+        #    return sigma
+        #  end
       end
     end
   end
 
   ### ジョブ実行時間制限
   for i in 1 :jobn
-    JuMP.@constraint(m1,sum(s[i,1:timen])==runtime[i])
+    JuMP.@constraint(m1,sum(s[i,1:timen])==Float64(runtime[i]))
   end
 
   ### ロボット同時実行制限(ロボット数を超過させない)
   for i in 1 :timen
-    JuMP.@constraint(m1,sum(s[1:jobn,i])<=robotn)
+    JuMP.@constraint(m1,sum(s[1:jobn,i])<=Float64(robotn) )
   end
 
   ### ジョブ連続実行制限
-  #### 連続性をチェックするための関数を定義
-  function ContinuousOperation(x...) 
-    sigma=0
-    for i in 1:length(x)-1
-        sigma=sigma+x[i]*x[i+1]     
-    end
-    return sigma
-  end
-
   register(m1, :ContinuousOperation, size(s)[2], ContinuousOperation; autodiff = true)
 
   for i in 1:jobn
     x=s[i,1:timen]
-    @constraint(m1,sum(ContinuousOperation(x...))==runtime[i]-1)
+    @constraint(m1,sum(ContinuousOperation(x...))== Float64(runtime[i]-1) )
   end
   
   ## ソルバーの実行
@@ -84,10 +91,10 @@ function uipathorchestratorschedulreadjustment(scheduleplan::DataFrame,robotn::I
   return plan,r,runtime
 end
 
-function adjustedresultcheck(plan::Array,runtime::Array,scheduleplan::DataFrame)
+function adjustedresultcheck(plan::Array,runtime::Array,scheduleplan::DataFrame,robotn::Int,jobn::Int,timen::Int)
   adjustedresultcheckmastarflag=true
-  jobn,timen=size(plan)
 
+  #ジョブごとに実行時間確保されているかチェック
   for i in 1:jobn
     adjustedresultcheckflag1=true 
     for j in 1:timen
@@ -99,6 +106,22 @@ function adjustedresultcheck(plan::Array,runtime::Array,scheduleplan::DataFrame)
       end
     end
   end
+
+  # ロボット数超過していないか確認
+  for i in 1:timen
+    if(sum(plan[:,i]) > robotn)
+      return adjustedresultcheckmastarflag=false
+    end
+  end
+
+  # 処理時間が連続しているか確認
+  for i in 1:jobn
+    x=plan[i,:]
+    if(sum(ContinuousOperation(x...))!=runtime[i]-1)
+      adjustedresultcheckmastarflag=false
+    end
+  end
+
 
   if(adjustedresultcheckmastarflag==false)
     plan=zeros(Int,jobn,timen)
