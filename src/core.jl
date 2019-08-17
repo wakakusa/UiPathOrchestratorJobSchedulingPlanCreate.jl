@@ -110,7 +110,7 @@ function adjustedresultcheck(plan::Array,runtime::Array,scheduleplan::DataFrame,
   # ロボット数超過していないか確認
   for i in 1:timen
     if(sum(plan[:,i]) > robotn)
-      return adjustedresultcheckmastarflag=false
+      adjustedresultcheckmastarflag=false
     end
   end
 
@@ -122,8 +122,7 @@ function adjustedresultcheck(plan::Array,runtime::Array,scheduleplan::DataFrame,
     end
   end
 
-
-  if(adjustedresultcheckmastarflag==false)
+  if(!adjustedresultcheckmastarflag)
     plan=zeros(Int,jobn,timen)
   end
 

@@ -61,6 +61,6 @@ using UiPathOrchestratorJobSchedulingPlanCreate
     #ジョブスケジュール作成失敗の場合のテスト
     robotn=1
     plan,r,runtime=uipathorchestratorschedulreadjustment(scheduleplan,robotn,run_unit_time,jobn,timen)
-#    @test convert(Matrix,adjustedresultcheck(plan,runtime,scheduleplan)[:,3:end] ) == zeros(Int,jobn,timen)
+    @test convert(Matrix,adjustedresultcheck(plan,runtime,scheduleplan,robotn,jobn,timen)[:,3:end] ) == zeros(Int,jobn,timen)
 
 end
