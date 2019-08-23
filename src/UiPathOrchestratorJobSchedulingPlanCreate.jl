@@ -1,12 +1,8 @@
 module UiPathOrchestratorJobSchedulingPlanCreate
-  using LinearAlgebra
-  using JuMP
-  using Ipopt
-  using XLSX
-  using DataFrames
-  using Plots
-  using GR
-  using PlotlyJS
+using LinearAlgebra
+using JuMP,Ipopt
+using DataFrames,XLSX
+using Plots,GR,PlotlyJS
 
 include("input.jl")
 include("core.jl")

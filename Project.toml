@@ -17,8 +17,15 @@ XLSX = "fdbf4ff8-1666-58a4-91e7-1b58723a45e0"
 
 [compat]
 julia = "1.1"
+MathOptInterface = "≥0.8.0"
+JuMP = "≥0.19.2"
+Ipopt = "≥0.5.0"
+Blink = "≥0.12.0"
+ORCA = "≥0.2.1"
+PlotlyJS = "≥0.12.5"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
-
+[targets]
+test = ["Test"]

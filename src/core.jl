@@ -9,10 +9,10 @@ end
 
 function uipathorchestratorschedulreadjustment(scheduleplan::DataFrame,robotn::Int,run_unit_time::Int,jobn::Int,timen::Int)
 ## 数理モデル
-  m1=JuMP.Model(with_optimizer(Ipopt.Optimizer))
+ m1 = JuMP.Model(with_optimizer(Ipopt.Optimizer))
 
   ## 変数
- JuMP. @variable(m1, 0<=s[1:jobn,1:timen] <=1 ) #ジョブ毎のコマ割りごとに実行有無を表示
+ JuMP.@variable(m1, 0<=s[1:jobn,1:timen] <=1 ) #ジョブ毎のコマ割りごとに実行有無を表示
  JuMP.@variable(m1, 0<=r[1:robotn,1:timen,1:jobn] <=1 ) #ロボット毎のコマ割りごとに実行有無を表示
 
   ## 定数
@@ -74,7 +74,7 @@ function uipathorchestratorschedulreadjustment(scheduleplan::DataFrame,robotn::I
   end
 
   ### ジョブ連続実行制限
-  register(m1, :ContinuousOperation, size(s)[2], ContinuousOperation; autodiff = true)
+  JuMP.register(m1, :ContinuousOperation, size(s)[2], ContinuousOperation; autodiff = true)
 
   for i in 1:jobn
     x=s[i,1:timen]

@@ -42,14 +42,14 @@ using UiPathOrchestratorJobSchedulingPlanCreate
     @test scheduleplan[1,8:9] == schedule[1,8:9]
     @test (robotn,run_unit_time,jobn,timen) == (6,15,10,9)
     
-    output=DataFrames.DataFrame(XLSX.readtable(OutputFilePath, "REPORT_jobplan")...)
+    output=DataFrames.DataFrame(XLSX.readtable(OutputFilePath, "v0.19.2")...)
     plan,r,runtime=uipathorchestratorschedulreadjustment(scheduleplan,robotn,run_unit_time,jobn,timen)
     plan=adjustedresultcheck(plan,runtime,scheduleplan,robotn,jobn,timen)
     @test plan == output
     @test uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="off") == output
     @test uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="GR") == output
     @test uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="それ以外") == output
-    if Sys.isapple()
+    if Sys.isapple() || Sys.islinux()
         @test uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="PlotlyJS") == output
     end
 
