@@ -49,7 +49,7 @@ using UiPathOrchestratorJobSchedulingPlanCreate
     @test uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="off") == output
     @test uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="GR") == output
     @test uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="それ以外") == output
-    if Sys.isapple() || Sys.islinux()
+    if Sys.isapple()
         @test uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="PlotlyJS") == output
     end
 
