@@ -5,6 +5,7 @@ using UiPathOrchestratorJobSchedulingPlanCreate
 
 @testset "UiPathOrchestratorJobSchedulingPlanCreate.jl" begin
     # Write your own tests here.
+    schedulcolumn=6
     jobname=Array{Any}(["スケジュール1","スケジュール2","スケジュール3","スケジュール4","スケジュール5","スケジュール6","スケジュール7","スケジュール8","スケジュール9","スケジュール10"])
     runtime=Array{Any}([30,60,15,30,60,45,30,15,60,30])
     Specifiedtime=Array{Any}([true,true,true,true,true,false,false,false,false,false])
@@ -38,19 +39,20 @@ using UiPathOrchestratorJobSchedulingPlanCreate
     scheduleplan,robotn,run_unit_time,jobn,timen=UiPathOrchestratorJobSchedulingPlanCreate.readprerequisite(InputFilePath,"parameters","schedule")
 
     names!(schedule,names(scheduleplan))
-    @test scheduleplan[1:5,1:5] == schedule[1:5,1:5]
+    @test scheduleplan[1:schedulcolumn-1,1:schedulcolumn-1] == schedule[1:schedulcolumn-1,1:schedulcolumn-1]
     @test scheduleplan[1,8:9] == schedule[1,8:9]
     @test (robotn,run_unit_time,jobn,timen) == (6,15,10,9)
     
     output=DataFrames.DataFrame(XLSX.readtable(OutputFilePath, "v0.19.2")...)
     plan,r,runtime=uipathorchestratorschedulreadjustment(scheduleplan,robotn,run_unit_time,jobn,timen)
     plan=adjustedresultcheck(plan,runtime,scheduleplan,robotn,jobn,timen)
-    @test plan == output
-    @test uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="off") == output
-    @test uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="GR") == output
-    @test uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="それ以外") == output
+    @test plan[:,schedulcolumn:end] == output[:,schedulcolumn:end]
+    @test plan[:,schedulcolumn:end] == output[:,schedulcolumn:end]
+    @test uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="off")[:,schedulcolumn:end] == output[:,schedulcolumn:end]
+    @test uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="GR")[:,schedulcolumn:end] == output[:,schedulcolumn:end]
+    @test uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="それ以外")[:,schedulcolumn:end] == output[:,schedulcolumn:end]
     if Sys.isapple()
-        @test uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="PlotlyJS") == output
+        @test uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="PlotlyJS")[:,schedulcolumn:end] == output[:,schedulcolumn:end]
     end
 
     OutputTestFilePath=joinpath(@__DIR__, "UiPathOrchestratorJobSchedulingPlan.xlsx")
@@ -61,6 +63,6 @@ using UiPathOrchestratorJobSchedulingPlanCreate
     #ジョブスケジュール作成失敗の場合のテスト
     robotn=1
     plan,r,runtime=uipathorchestratorschedulreadjustment(scheduleplan,robotn,run_unit_time,jobn,timen)
-    @test convert(Matrix,adjustedresultcheck(plan,runtime,scheduleplan,robotn,jobn,timen)[:,3:end] ) == zeros(Int,jobn,timen)
+    @test convert(Matrix,adjustedresultcheck(plan,runtime,scheduleplan,robotn,jobn,timen)[:,schedulcolumn:end] ) == zeros(Int,jobn,timen)
 
 end

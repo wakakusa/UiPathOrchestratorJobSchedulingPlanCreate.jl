@@ -1,25 +1,25 @@
-function plotplanmaster(plan::DataFrame)
-  xs = map(String,names(plan)[3:end] )
+function plotplanmaster(plan::DataFrame;schedulcolumn::Int=6)
+  xs = map(String,names(plan)[schedulcolumn:end] )
   ys = map(String,plan[:,:jobname])
 
-  plot=Plots.heatmap(xs, ys, convert(Matrix,plan[:,3:end]), legend=false,c=ColorGradient([:white,:blue]))
+  plot=Plots.heatmap(xs, ys, convert(Matrix,plan[:,schedulcolumn:end]), legend=false,c=ColorGradient([:white,:blue]))
 
   return plot
 
 end
 
 
-function plotplangr(plan::DataFrame)
+function plotplangr(plan::DataFrame;schedulcolumn::Int=6)
   gr()
 
-  plot=plotplanmaster(plan)
+  plot=plotplanmaster(plan,schedulcolumn=schedulcolumn)
   gui(plot)
 end
 
-function plotplanplotlyjs(plan::DataFrame)
+function plotplanplotlyjs(plan::DataFrame;schedulcolumn::Int=6)
   plotlyjs()
 
-  plot=plotplanmaster(plan)
+  plot=plotplanmaster(plan,schedulcolumn=schedulcolumn)
   gui(plot)
 end
 

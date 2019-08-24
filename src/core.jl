@@ -7,7 +7,7 @@ function ContinuousOperation(x...)
   return sigma
 end
 
-function uipathorchestratorschedulreadjustment(scheduleplan::DataFrame,robotn::Int,run_unit_time::Int,jobn::Int,timen::Int)
+function uipathorchestratorschedulreadjustment(scheduleplan::DataFrame,robotn::Int,run_unit_time::Int,jobn::Int,timen::Int;schedulcolumn::Int=6)
 ## 数理モデル
  m1 = JuMP.Model(with_optimizer(Ipopt.Optimizer))
 
@@ -46,7 +46,7 @@ function uipathorchestratorschedulreadjustment(scheduleplan::DataFrame,robotn::I
   for i in 1:jobn
     flag =true
     if( convert(Bool,scheduleplan[i,:Specifiedtime]) )
-      for j in 6:6+timen-1
+      for j in schedulcolumn:schedulcolumn+timen-1
         if(typeof(scheduleplan[i,j] ) != Missing && flag)
           index=j-5
           JuMP.@constraint(m1, s[i,index:index+runtime[i]-1] .== 1.0 )
@@ -91,7 +91,7 @@ function uipathorchestratorschedulreadjustment(scheduleplan::DataFrame,robotn::I
   return plan,r,runtime
 end
 
-function adjustedresultcheck(plan::Array,runtime::Array,scheduleplan::DataFrame,robotn::Int,jobn::Int,timen::Int)
+function adjustedresultcheck(plan::Array,runtime::Array,scheduleplan::DataFrame,robotn::Int,jobn::Int,timen::Int;schedulcolumn::Int=6)
   adjustedresultcheckmastarflag=true
 
   #ジョブごとに実行時間確保されているかチェック
@@ -126,9 +126,9 @@ function adjustedresultcheck(plan::Array,runtime::Array,scheduleplan::DataFrame,
     plan=zeros(Int,jobn,timen)
   end
 
-  result=scheduleplan[:,6:end ]
+  result=scheduleplan[:,schedulcolumn:end ]
   result[:,:].= plan
-  result=hcat(scheduleplan[:,1:2 ] , result)
+  result=hcat(scheduleplan[:,1:schedulcolumn-1 ] , result)
 
   return result
 
