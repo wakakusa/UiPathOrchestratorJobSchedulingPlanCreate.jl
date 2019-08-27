@@ -130,6 +130,26 @@ function adjustedresultcheck(plan::Array,runtime::Array,scheduleplan::DataFrame,
   result[:,:].= plan
   result=hcat(scheduleplan[:,1:schedulcolumn-1 ] , result)
 
+  #処理開始時間および終了時間を取得
+  times=names(scheduleplan)
+
+  for i in 1 :  size(scheduleplan)[1]
+    startflag=true
+    endflag=true
+
+    for j in schedulcolumn : size(scheduleplan)[2]
+      if(result[i,j] == 1 && startflag)
+        startflag = false
+        result[i,:JobStartTime]=string(times[j])
+      end
+
+      if(result[i,j] == 0 && !startflag && endflag )
+        endflag = false
+        result[i,:JobEndTime]=string(times[j])
+      end
+    end
+  end
+
   return result
 
 end
