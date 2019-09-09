@@ -1,12 +1,14 @@
 module UiPathOrchestratorJobSchedulingPlanCreate
-using LinearAlgebra
-using JuMP,Ipopt
+using LinearAlgebra,Dates
+using JuMP,Ipopt,MathOptInterface
 using DataFrames,XLSX
 using Plots,GR,PlotlyJS
 
 include("input.jl")
-include("core.jl")
+include("commonfunc.jl")
+include("engine1.jl")
 include("output.jl")
+include("engine2.jl")
 
 function uipathorchestratorschedulrecreate(ExcelFilePath::String,parameters::String,schedule::String;planexport::Bool=false,ExportExcelFilePath::String="",plotengine="PlotlyJS",schedulcolumn::Int=6)
   scheduleplan,robotn,run_unit_time,jobn,timen=readprerequisite(ExcelFilePath,parameters,schedule)

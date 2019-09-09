@@ -1,12 +1,3 @@
-# 処理時間が連続しているか確認
-function ContinuousOperation(x...) 
-  sigma=0
-  for i in 1:length(x)-1
-      sigma=sigma+x[i]*x[i+1]     
-  end
-  return sigma
-end
-
 function uipathorchestratorschedulreadjustment(scheduleplan::DataFrame,robotn::Int,run_unit_time::Int,jobn::Int,timen::Int;schedulcolumn::Int=6)
 ## 数理モデル
  m1 = JuMP.Model(with_optimizer(Ipopt.Optimizer))
@@ -32,16 +23,6 @@ function uipathorchestratorschedulreadjustment(scheduleplan::DataFrame,robotn::I
   JuMP.@objective(m1, Min, sum(r[1:robotn,1:timen,1:jobn] ))
 
   ## 制約条件
-  ### ロボット同時実行制限
-  for  i in 1:jobn
-    sigma=0
-    for j in 1:timen
-      for k in 1: robotn
-
-      end
-    end
-  end 
-
   ### ジョブ実行時間予約指定
   for i in 1:jobn
     flag =true
@@ -51,14 +32,7 @@ function uipathorchestratorschedulreadjustment(scheduleplan::DataFrame,robotn::I
           index=j-5
           JuMP.@constraint(m1, s[i,index:index+runtime[i]-1] .== 1.0 )
            flag=false
-        end  #### 連続性をチェックするための関数を定義
-        #  function ContinuousOperation(x...) 
-        #    sigma=0
-        #    for i in 1:length(x)-1
-        #        sigma=sigma+x[i]*x[i+1]     
-        #    end
-        #    return sigma
-        #  end
+        end
       end
     end
   end
