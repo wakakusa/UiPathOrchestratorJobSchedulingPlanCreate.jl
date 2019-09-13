@@ -4,13 +4,12 @@ function uipathorchestratorschedulreadjustment(scheduleplan::DataFrame,robotn::I
 
   ## 変数
  JuMP.@variable(m1, 0<=s[1:jobn,1:timen] <=1 ) #ジョブ毎のコマ割りごとに実行有無を表示
- JuMP.@variable(m1, 0<=r[1:robotn,1:timen,1:jobn] <=1 ) #ロボット毎のコマ割りごとに実行有無を表示
 
   ## 定数
-   runtime=zeros(Int,jobn,1) #ジョブ毎の実行時間
+  runtime=zeros(Int,jobn,1) #ジョブ毎の実行時間
 
   ## ジョブ実行時間
-   ###割り当てるコマ数を算出
+  ###割り当てるコマ数を算出
   for i in 1:jobn
     runtime[i]=scheduleplan[i,:runtime]/run_unit_time
   end
@@ -20,9 +19,55 @@ function uipathorchestratorschedulreadjustment(scheduleplan::DataFrame,robotn::I
 
   ## 目的関数
   JuMP.@objective(m1, Min, sum(scheduleplan[1:end,:runtime])/run_unit_time-sum(s[1:jobn,1:timen] ))
-  JuMP.@objective(m1, Min, sum(r[1:robotn,1:timen,1:jobn] ))
 
   ## 制約条件
+  ### 割当コマ数が１の場合の不具合対策
+  ### 条件その１
+  for i in 1:jobn
+    if(runtime[i]==1)
+      x1=Int(round(timen/2))
+      x2=Int(round(timen/2))+1
+      JuMP.@NLconstraint(m1, abs(sum(s[i,j] for j in 1:x1)-sum(s[i,] for j in x2:timen )) >= 1.0 )
+    end
+  end
+
+  ### 条件その2
+  for i in 1:jobn
+    if(runtime[i]==1)
+      x1=1:2:timen
+      x2=2:2:timen
+      JuMP.@NLconstraint(m1, abs(sum(s[i,j] for j in x1)-sum(s[i,] for j in x2 )) >= 1.0 )
+    end
+  end
+
+  ### 条件その3
+  for i in 1:jobn
+    if(runtime[i]==1)
+      x1=StatsBase.sample(1:timen, Int(round(timen/2)) ,replace=false, ordered=true)
+      x2=setdiff(1:timen,x1)
+      JuMP.@NLconstraint(m1, abs(sum(s[i,j] for j in x1)-sum(s[i,] for j in x2 )) >= 1.0 )
+    end
+  end
+
+  ### 条件その4
+  for i in 1:jobn
+    if(runtime[i]==1)
+      x1=StatsBase.sample(1:timen, Int(round(timen/2)) ,replace=true, ordered=true)
+      x2=setdiff(1:timen,x1)
+      JuMP.@NLconstraint(m1, abs(sum(s[i,j] for j in x1)-sum(s[i,] for j in x2 )) >= 1.0 )
+    end
+  end
+  
+  ### 条件その5
+  for i in 1:jobn
+    if(runtime[i]==1)
+      x1=StatsBase.sample(1:timen, rand(1:timen,1)[1] ,replace=true, ordered=true)
+      x2=setdiff(1:timen,x1)
+      JuMP.@NLconstraint(m1, abs(sum(s[i,j] for j in x1)-sum(s[i,] for j in x2 )) >= 1.0 )
+    end
+  end
+
+
   ### ジョブ実行時間予約指定
   for i in 1:jobn
     flag =true
@@ -62,7 +107,7 @@ function uipathorchestratorschedulreadjustment(scheduleplan::DataFrame,robotn::I
   plan=zeros(Int,jobn,timen)
   plan=map(Int,map(round,JuMP.value.(s)))
 
-  return plan,r,runtime
+  return plan,runtime
 end
 
 function adjustedresultcheck(plan::Array,runtime::Array,scheduleplan::DataFrame,robotn::Int,jobn::Int,timen::Int;schedulcolumn::Int=6)

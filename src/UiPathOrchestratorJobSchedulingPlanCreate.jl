@@ -1,5 +1,5 @@
 module UiPathOrchestratorJobSchedulingPlanCreate
-using LinearAlgebra,Dates
+using LinearAlgebra,Dates,Random,Distributions
 using JuMP,Ipopt,MathOptInterface
 using DataFrames,XLSX
 using Plots,GR,PlotlyJS
