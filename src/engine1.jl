@@ -61,12 +61,13 @@ function uipathorchestratorschedulreadjustment(scheduleplan::DataFrame,robotn::I
   ### 条件その5
   for i in 1:jobn
     if(runtime[i]==1)
-      x1=StatsBase.sample(1:timen, rand(1:timen,1)[1] ,replace=true, ordered=true)
-      x2=setdiff(1:timen,x1)
-      JuMP.@NLconstraint(m1, abs(sum(s[i,j] for j in x1)-sum(s[i,] for j in x2 )) >= 1.0 )
+      for k in 1:3
+        x1=StatsBase.sample(1:timen, rand(1:timen,1)[1] ,replace=true, ordered=true)
+        x2=setdiff(1:timen,x1)
+        JuMP.@NLconstraint(m1, abs(sum(s[i,j] for j in x1)-sum(s[i,] for j in x2 )) >= 1.0 )
+      end
     end
   end
-
 
   ### ジョブ実行時間予約指定
   for i in 1:jobn

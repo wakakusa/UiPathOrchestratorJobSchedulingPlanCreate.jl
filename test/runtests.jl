@@ -9,7 +9,6 @@ using UiPathOrchestratorJobSchedulingPlanCreate
     jobname=Array{Any}(["スケジュール1","スケジュール2","スケジュール3","スケジュール4","スケジュール5","スケジュール6","スケジュール7","スケジュール8","スケジュール9","スケジュール10"])
     runtime=Array{Any}([30,60,15,30,60,45,30,15,60,30])
     Specifiedtime=Array{Any}([true,true,true,true,true,false,false,false,false,false])
-#    Specifiedtime=Array{Any}([1,1,1,1,1,0,0,0,0,0])
     JobStartTime=Array{Any}(["0:30","0:45","0:15","0:00","1:00",missing,missing,missing,missing,missing])
     JobEndTime=Array{Any}(["1:00","1:45","0:30","0:30","2:00",missing,missing,missing,missing,missing])
 #   0:00
@@ -32,6 +31,7 @@ using UiPathOrchestratorJobSchedulingPlanCreate
     col9=Array{Any}([missing,missing,missing,missing,missing,missing,missing,missing,missing,missing])
 #    DataFrame作成
     schedule=DataFrame(jobname=jobname,runtime=runtime,Specifiedtime=Specifiedtime,JobStartTime=JobStartTime,JobEndTime=JobEndTime,col1=col1,col2=col2,col3=col3,col4=col4,col5=col5,col6=col6,col7=col7,col8=col8,col9=col9)
+    names!(schedule,[:jobname,:runtime,:Specifiedtime,:JobStartTime,:JobEndTime,Symbol("0:00"),Symbol("0:15"),Symbol("0:30"),Symbol("0:45"),Symbol("1:00"),Symbol("1:15"),Symbol("1:30"),Symbol("1:45"),Symbol("2:00")])
 
     InputFilePath=joinpath(@__DIR__, "schedule.xlsx")
     OutputFilePath=joinpath(@__DIR__, "scheduleoutput.xlsx")
@@ -44,15 +44,15 @@ using UiPathOrchestratorJobSchedulingPlanCreate
     @test (robotn,run_unit_time,jobn,timen) == (6,15,10,9)
     
     output=DataFrames.DataFrame(XLSX.readtable(OutputFilePath, "v0.19.2")...)
-    plan,r,runtime=uipathorchestratorschedulreadjustment(scheduleplan,robotn,run_unit_time,jobn,timen)
+    plan,runtime=uipathorchestratorschedulreadjustment(scheduleplan,robotn,run_unit_time,jobn,timen)
     plan=adjustedresultcheck(plan,runtime,scheduleplan,robotn,jobn,timen)
-    @test plan[:,schedulcolumn:end] == output[:,schedulcolumn:end]
-    @test plan[:,schedulcolumn:end] == output[:,schedulcolumn:end]
-    @test uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="off")[:,schedulcolumn:end] == output[:,schedulcolumn:end]
-    @test uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="GR")[:,schedulcolumn:end] == output[:,schedulcolumn:end]
-    @test uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="それ以外")[:,schedulcolumn:end] == output[:,schedulcolumn:end]
+    @test sum(convert(Matrix,plan[:,schedulcolumn:end])) == 25
+    @test sum(convert(Matrix,plan[:,schedulcolumn:end])) == 25
+    @test sum(convert(Matrix,uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="off")[:,schedulcolumn:end])) == 25
+    @test sum(convert(Matrix,uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="GR")[:,schedulcolumn:end])) == 25
+    @test sum(convert(Matrix,uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="それ以外")[:,schedulcolumn:end])) == 25
     if Sys.isapple()
-        @test uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="PlotlyJS")[:,schedulcolumn:end] == output[:,schedulcolumn:end]
+        @test sum(convert(Matrix,uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="PlotlyJS")[:,schedulcolumn:end])) == 25
     end
 
     OutputTestFilePath=joinpath(@__DIR__, "UiPathOrchestratorJobSchedulingPlan.xlsx")
@@ -62,7 +62,7 @@ using UiPathOrchestratorJobSchedulingPlanCreate
 
     #ジョブスケジュール作成失敗の場合のテスト
     robotn=1
-    plan,r,runtime=uipathorchestratorschedulreadjustment(scheduleplan,robotn,run_unit_time,jobn,timen)
+    plan,runtime=uipathorchestratorschedulreadjustment(scheduleplan,robotn,run_unit_time,jobn,timen)
     @test convert(Matrix,adjustedresultcheck(plan,runtime,scheduleplan,robotn,jobn,timen)[:,schedulcolumn:end] ) == zeros(Int,jobn,timen)
 
 end
