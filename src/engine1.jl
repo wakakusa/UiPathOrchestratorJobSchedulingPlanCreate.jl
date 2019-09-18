@@ -1,3 +1,4 @@
+# スケジュール作成
 function uipathorchestratorschedulreadjustment(scheduleplan::DataFrame,robotn::Int,run_unit_time::Int,jobn::Int,timen::Int;schedulcolumn::Int=6)
 ## 数理モデル
  m1 = JuMP.Model(with_optimizer(Ipopt.Optimizer))
@@ -14,68 +15,17 @@ function uipathorchestratorschedulreadjustment(scheduleplan::DataFrame,robotn::I
     runtime[i]=scheduleplan[i,:runtime]/run_unit_time
   end
 
-  ###要調整 ジョブに余裕を持たせるかどうか
-  #runtime=runtime.+1
-
   ## 目的関数
   JuMP.@objective(m1, Min, sum(scheduleplan[1:end,:runtime])/run_unit_time-sum(s[1:jobn,1:timen] ))
 
   ## 制約条件
-  ### 割当コマ数が１の場合の不具合対策
-  ### 条件その１
-  for i in 1:jobn
-    if(runtime[i]==1)
-      x1=Int(round(timen/2))
-      x2=Int(round(timen/2))+1
-      JuMP.@NLconstraint(m1, abs(sum(s[i,j] for j in 1:x1)-sum(s[i,] for j in x2:timen )) >= 1.0 )
-    end
-  end
-
-  ### 条件その2
-  for i in 1:jobn
-    if(runtime[i]==1)
-      x1=1:2:timen
-      x2=2:2:timen
-      JuMP.@NLconstraint(m1, abs(sum(s[i,j] for j in x1)-sum(s[i,] for j in x2 )) >= 1.0 )
-    end
-  end
-
-  ### 条件その3
-  for i in 1:jobn
-    if(runtime[i]==1)
-      x1=StatsBase.sample(1:timen, Int(round(timen/2)) ,replace=false, ordered=true)
-      x2=setdiff(1:timen,x1)
-      JuMP.@NLconstraint(m1, abs(sum(s[i,j] for j in x1)-sum(s[i,] for j in x2 )) >= 1.0 )
-    end
-  end
-
-  ### 条件その4
-  for i in 1:jobn
-    if(runtime[i]==1)
-      x1=StatsBase.sample(1:timen, Int(round(timen/2)) ,replace=true, ordered=true)
-      x2=setdiff(1:timen,x1)
-      JuMP.@NLconstraint(m1, abs(sum(s[i,j] for j in x1)-sum(s[i,] for j in x2 )) >= 1.0 )
-    end
-  end
-  
-  ### 条件その5
-  for i in 1:jobn
-    if(runtime[i]==1)
-      for k in 1:3
-        x1=StatsBase.sample(1:timen, rand(1:timen,1)[1] ,replace=true, ordered=true)
-        x2=setdiff(1:timen,x1)
-        JuMP.@NLconstraint(m1, abs(sum(s[i,j] for j in x1)-sum(s[i,] for j in x2 )) >= 1.0 )
-      end
-    end
-  end
-
   ### ジョブ実行時間予約指定
   for i in 1:jobn
     flag =true
     if( convert(Bool,scheduleplan[i,:Specifiedtime]) )
       for j in schedulcolumn:schedulcolumn+timen-1
-        if(typeof(scheduleplan[i,j] ) != Missing && flag)
-          index=j-5
+        if(typeof(scheduleplan[i,j]) !=Missing && flag)
+          index=j-schedulcolumn+1
           JuMP.@constraint(m1, s[i,index:index+runtime[i]-1] .== 1.0 )
            flag=false
         end
@@ -108,20 +58,37 @@ function uipathorchestratorschedulreadjustment(scheduleplan::DataFrame,robotn::I
   plan=zeros(Int,jobn,timen)
   plan=map(Int,map(round,JuMP.value.(s)))
 
+  # 割当時間1コマの不具合対策
+  if(sum(plan) != sum(runtime))
+    schedulesubplan=scheduleplan[:,schedulcolumn:end ]
+    schedulesubplan[:,:].= hcat(plan,zeros(Int,jobn,1))
+    schedulesubplan=hcat(scheduleplan[:,1:schedulcolumn-1 ] , schedulesubplan)
+    for i in 1:jobn
+      if(sum(schedulesubplan[i,schedulcolumn:end]) == runtime[i])
+        schedulesubplan[i,:Specifiedtime] =1
+      end
+    end
+
+    plan = uipathorchestratorschedulreadjustmentsub1(schedulesubplan,robotn,run_unit_time,jobn,timen,schedulcolumn=schedulcolumn)
+  end
+
   return plan,runtime
 end
 
-function adjustedresultcheck(plan::Array,runtime::Array,scheduleplan::DataFrame,robotn::Int,jobn::Int,timen::Int;schedulcolumn::Int=6)
-  adjustedresultcheckmastarflag=true
+# 作成されたスケジュールの妥当性チェック
+function adjustedresultcheck(plan::Array,runtime::Array,scheduleplan::DataFrame,robotn::Int,jobn::Int,timen::Int;schedulcolumn::Int=6,checkreturn::Bool=false)
+adjustedresultcheckflag=true
+adjustedresultcheckmastarflag=Array{Bool}(undef,jobn,3)
+adjustedresultcheckmastarflag .= true
 
   #ジョブごとに実行時間確保されているかチェック
   for i in 1:jobn
     adjustedresultcheckflag1=true 
     for j in 1:timen
-      if(adjustedresultcheckmastarflag && plan[i,j]==1 && adjustedresultcheckflag1)
+      if(plan[i,j]==1 && adjustedresultcheckflag1)
         adjustedresultcheckflag1=false
         if(sum(plan[i,j:(j+runtime[i]-1)])!=runtime[i])
-          adjustedresultcheckmastarflag=false
+          adjustedresultcheckmastarflag[i,1]=false
         end
       end
     end
@@ -130,7 +97,7 @@ function adjustedresultcheck(plan::Array,runtime::Array,scheduleplan::DataFrame,
   # ロボット数超過していないか確認
   for i in 1:timen
     if(sum(plan[:,i]) > robotn)
-      adjustedresultcheckmastarflag=false
+      adjustedresultcheckmastarflag[i,2]=false
     end
   end
 
@@ -138,12 +105,13 @@ function adjustedresultcheck(plan::Array,runtime::Array,scheduleplan::DataFrame,
   for i in 1:jobn
     x=plan[i,:]
     if(sum(ContinuousOperation(x...))!=runtime[i]-1)
-      adjustedresultcheckmastarflag=false
+      adjustedresultcheckmastarflag[i,3]=false
     end
   end
 
-  if(!adjustedresultcheckmastarflag)
+  if(sum(adjustedresultcheckmastarflag) != size(adjustedresultcheckmastarflag)[1]*size(adjustedresultcheckmastarflag)[2])
     plan=zeros(Int,jobn,timen)
+    adjustedresultcheckflag = false
   end
 
   result=scheduleplan[:,schedulcolumn:end ]
@@ -170,7 +138,65 @@ function adjustedresultcheck(plan::Array,runtime::Array,scheduleplan::DataFrame,
     end
   end
 
-  return result
+  if(checkreturn == true)
+    return result,adjustedresultcheckflag
+  else
+    return result
+  end
 
 end
 
+# スケジュール作成サブ１
+function uipathorchestratorschedulreadjustmentsub1(schedulesubplan::DataFrame,robotn::Int,run_unit_time::Int,jobn::Int,timen::Int;schedulcolumn::Int=6)
+  ## 数理モデル
+  msub1 = JuMP.Model(with_optimizer(Cbc.Optimizer))
+ 
+   ## 変数
+  JuMP.@variable(msub1, s[1:jobn,1:timen] ,Bin ) #ジョブ毎のコマ割りごとに実行有無を表示
+ 
+   ## 定数
+   runtime=zeros(Int,jobn,1) #ジョブ毎の実行時間
+ 
+   ## ジョブ実行時間
+   ###割り当てるコマ数を算出
+   for i in 1:jobn
+     runtime[i]=schedulesubplan[i,:runtime]/run_unit_time
+   end
+ 
+   ## 目的関数
+   JuMP.@objective(msub1, Min, sum(schedulesubplan[1:end,:runtime])/run_unit_time-sum(s[1:jobn,1:timen] ))
+ 
+   ## 制約条件
+   ### ジョブ実行時間予約指定
+   for i in 1:jobn
+     flag =true
+     if( convert(Bool,schedulesubplan[i,:Specifiedtime]) )
+       for j in schedulcolumn:schedulcolumn+timen-1
+         if(schedulesubplan[i,j] != 0 && flag)
+           index=j-schedulcolumn+1
+           JuMP.@constraint(msub1, s[i,index:index+runtime[i]-1] .== 1.0 )
+            flag=false
+         end
+       end
+     end
+   end
+ 
+   ### ジョブ実行時間制限
+   for i in 1 :jobn
+     JuMP.@constraint(msub1,sum(s[i,1:timen])==Float64(runtime[i]))
+   end
+ 
+   ### ロボット同時実行制限(ロボット数を超過させない)
+   for i in 1 :timen
+     JuMP.@constraint(msub1,sum(s[1:jobn,i])<=Float64(robotn) )
+   end
+   
+   ## ソルバーの実行
+   status = JuMP.optimize!(msub1)
+ 
+   ## スケジュール案表示
+   subplan=zeros(Int,jobn,timen)
+   subplan=map(Int,map(round,JuMP.value.(s)))
+ 
+ return subplan
+end
