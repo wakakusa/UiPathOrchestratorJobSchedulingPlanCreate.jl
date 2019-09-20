@@ -41,18 +41,18 @@ using UiPathOrchestratorJobSchedulingPlanCreate
     names!(schedule,names(scheduleplan))
     @test scheduleplan[1:schedulcolumn-1,1:schedulcolumn-1] == schedule[1:schedulcolumn-1,1:schedulcolumn-1]
     @test scheduleplan[1,8:9] == schedule[1,8:9]
-    @test (robotn,run_unit_time,jobn,timen) == (6,15,10,9)
+    @test (robotn,run_unit_time,jobn,timen) == (6,15,10,8)
     
     output=DataFrames.DataFrame(XLSX.readtable(OutputFilePath, "v0.19.2")...)
     plan,runtime=uipathorchestratorschedulreadjustment(scheduleplan,robotn,run_unit_time,jobn,timen)
     plan=adjustedresultcheck(plan,runtime,scheduleplan,robotn,jobn,timen)
-    @test sum(convert(Matrix,plan[:,schedulcolumn:end])) == 25
-    @test sum(convert(Matrix,plan[:,schedulcolumn:end])) == 25
-    @test sum(convert(Matrix,uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="off")[:,schedulcolumn:end])) == 25
-    @test sum(convert(Matrix,uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="GR")[:,schedulcolumn:end])) == 25
-    @test sum(convert(Matrix,uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="それ以外")[:,schedulcolumn:end])) == 25
+    @test sum(convert(Matrix,plan[:,schedulcolumn:end-1])) == 25
+    @test convert(Matrix,plan[:,schedulcolumn:end-1]) == convert(Matrix,output[:,schedulcolumn:end-1])
+    @test sum(convert(Matrix,uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="off")[:,schedulcolumn:end-1])) == 25
+    @test sum(convert(Matrix,uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="GR")[:,schedulcolumn:end-1])) == 25
+    @test sum(convert(Matrix,uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="それ以外")[:,schedulcolumn:end-1])) == 25
     if Sys.isapple()
-        @test sum(convert(Matrix,uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="PlotlyJS")[:,schedulcolumn:end])) == 25
+        sum(convert(Matrix,uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="PlotlyJS")[:,schedulcolumn:end-1])) == 25
     end
 
     OutputTestFilePath=joinpath(@__DIR__, "UiPathOrchestratorJobSchedulingPlan.xlsx")
@@ -63,6 +63,6 @@ using UiPathOrchestratorJobSchedulingPlanCreate
     #ジョブスケジュール作成失敗の場合のテスト
     robotn=1
     plan,runtime=uipathorchestratorschedulreadjustment(scheduleplan,robotn,run_unit_time,jobn,timen)
-    @test convert(Matrix,adjustedresultcheck(plan,runtime,scheduleplan,robotn,jobn,timen)[:,schedulcolumn:end] ) == zeros(Int,jobn,timen)
+    @test convert(Matrix,adjustedresultcheck(plan,runtime,scheduleplan,robotn,jobn,timen)[:,schedulcolumn:end-1] ) == zeros(Int,jobn,timen)
 
 end

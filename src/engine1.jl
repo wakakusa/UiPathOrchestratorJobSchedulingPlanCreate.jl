@@ -115,7 +115,7 @@ adjustedresultcheckmastarflag .= true
   end
 
   result=scheduleplan[:,schedulcolumn:end ]
-  result[:,:].= plan
+  result[:,:].= hcat(plan,zeros(Int,jobn,1))
   result=hcat(scheduleplan[:,1:schedulcolumn-1 ] , result)
 
   #処理開始時間および終了時間を取得
@@ -138,7 +138,9 @@ adjustedresultcheckmastarflag .= true
     end
   end
 
-  if(checkreturn == true)
+  result[:,end] .=missing
+
+  if(checkreturn)
     return result,adjustedresultcheckflag
   else
     return result
