@@ -46,13 +46,15 @@ using UiPathOrchestratorJobSchedulingPlanCreate
     output=DataFrames.DataFrame(XLSX.readtable(OutputFilePath, "v0.19.2")...)
     plan,runtime=uipathorchestratorschedulreadjustment(scheduleplan,robotn,run_unit_time,jobn,timen)
     plan=adjustedresultcheck(plan,runtime,scheduleplan,robotn,jobn,timen)
-    @test sum(convert(Matrix,plan[:,schedulcolumn:end-1])) == 25
+    @test sum(convert(Matrix,plan[:,schedulcolumn:end-1])) == sum(runtime)
     @test convert(Matrix,plan[:,schedulcolumn:end-1]) == convert(Matrix,output[:,schedulcolumn:end-1])
-    @test sum(convert(Matrix,uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="off")[:,schedulcolumn:end-1])) == 25
-    @test sum(convert(Matrix,uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="GR")[:,schedulcolumn:end-1])) == 25
-    @test sum(convert(Matrix,uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="それ以外")[:,schedulcolumn:end-1])) == 25
+    @test sum(convert(Matrix,uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="off")[:,schedulcolumn:end-1])) == sum(runtime)
+    @test sum(convert(Matrix,uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="GR")[:,schedulcolumn:end-1])) == sum(runtime)
+    @test sum(convert(Matrix,uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="それ以外")[:,schedulcolumn:end-1])) == sum(runtime)
+    @test uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="それ以外",planexport=true)[2]
+    @test createtimeset()[1,1]=="00:00"
     if Sys.isapple()
-        sum(convert(Matrix,uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="PlotlyJS")[:,schedulcolumn:end-1])) == 25
+        sum(convert(Matrix,uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="PlotlyJS")[:,schedulcolumn:end-1])) == sum(runtime)
     end
 
     OutputTestFilePath=joinpath(@__DIR__, "UiPathOrchestratorJobSchedulingPlan.xlsx")
