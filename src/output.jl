@@ -19,8 +19,8 @@ end
 function plotplanplotlyjs(plan::DataFrame;schedulcolumn::Int=6)
   plotlyjs()
 
-  #plot=plotplanmaster(plan,schedulcolumn=schedulcolumn)
-  #gui(plot)
+  plot=plotplanmaster(plan,schedulcolumn=schedulcolumn)
+  gui(plot)
 end
 
 function exportplan(plan::DataFrame;ExcelFilePath::String="")
