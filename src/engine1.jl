@@ -1,4 +1,19 @@
-# スケジュール作成
+"""
+    uipathorchestratorschedulreadjustment(scheduleplan::DataFrame,robotn::Int,run_unit_time::Int,jobn::Int,timen::Int,schedulcolumn::Int=6)
+
+処理概要:スケジュール作成、処理結果の整合性確認および整形
+
+# Arguments
+* `scheduleplan`:
+* `robotn`:
+* `run_unit_time`:ジョブ作成に必要な情報が記載されたシート名を指定
+* `jobn`:
+* `timen`:
+* `schedulcolumn`:スケジュールON,OFF開始列を指定（デフォルト：６）
+
+# 結果（戻り値）
+スケジュール調整結果を出力
+"""
 function uipathorchestratorschedulreadjustment(scheduleplan::DataFrame,robotn::Int,run_unit_time::Int,jobn::Int,timen::Int;schedulcolumn::Int=6)
 ## 数理モデル
  m1 = JuMP.Model(with_optimizer(Ipopt.Optimizer))
@@ -75,7 +90,21 @@ function uipathorchestratorschedulreadjustment(scheduleplan::DataFrame,robotn::I
   return plan,runtime
 end
 
-# 作成されたスケジュールの妥当性チェック
+
+"""
+    adjustedresultcheck(plan::Array,runtime::Array,scheduleplan::DataFrame)
+
+処理概要:スケジュール調整した結果が正しく結果かどうかチェック。作成されたスケジュールの妥当性チェック
+
+# Arguments
+* `plan`:uipathorchestratorschedulreadjustmentの実行結果を指定
+* `runtime`:readprerequisiteで読み込んだ結果を指定
+* `uipathorchestratorschedulreadjustment`:readprerequisiteで読み込んだ結果を指定
+* `schedulcolumn`:スケジュールON,OFF開始列を指定（デフォルト：６）
+
+# 結果（戻り値）
+スケジュール調整結果を出力
+"""
 function adjustedresultcheck(plan::Array,runtime::Array,scheduleplan::DataFrame,robotn::Int,jobn::Int,timen::Int;schedulcolumn::Int=6,checkreturn::Bool=false)
 adjustedresultcheckflag=true
 adjustedresultcheckmastarflag=Array{Bool}(undef,jobn,3)

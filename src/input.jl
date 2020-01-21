@@ -1,4 +1,18 @@
 #計算の前提条件読込み
+"""
+    readprerequisite(ExcelFilePath::String,parameters::String,schedule::String)
+
+処理概要:スケジュール作成
+
+# Arguments
+* `ExcelFilePath`:スケジュール作成に必要な情報が記載されたExcelファイルのフルパスを指定。
+* `parameters`:パラメーターが記載されたシート名を指定
+* `schedule`:ジョブ作成に必要な情報が記載されたシート名を指定
+* `schedulcolumn`:スケジュールON,OFF開始列を指定（デフォルト：６）
+
+# 結果（戻り値）
+パラメータの読込み結果を出力
+"""
 function readprerequisite(ExcelFilePath::String,parameters::String,schedule::String;schedulcolumn::Int=6)
   parameters=DataFrames.DataFrame(XLSX.readtable(ExcelFilePath, parameters)...)  
   scheduleplan=DataFrames.DataFrame(XLSX.readtable(ExcelFilePath, schedule)...)
