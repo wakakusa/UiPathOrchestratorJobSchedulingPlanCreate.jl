@@ -38,7 +38,7 @@ using UiPathOrchestratorJobSchedulingPlanCreate
 
     scheduleplan,robotn,run_unit_time,jobn,timen=UiPathOrchestratorJobSchedulingPlanCreate.readprerequisite(InputFilePath,"parameters","schedule")
 
-    names!(schedule,names(scheduleplan))
+    rename!(schedule,names(scheduleplan))
     @test scheduleplan[1:schedulcolumn-1,1:schedulcolumn-1] == schedule[1:schedulcolumn-1,1:schedulcolumn-1]
     @test scheduleplan[1,8:9] == schedule[1,8:9]
     @test (robotn,run_unit_time,jobn,timen) == (6,15,10,8)
@@ -49,7 +49,7 @@ using UiPathOrchestratorJobSchedulingPlanCreate
     @test sum(convert(Matrix,plan[:,schedulcolumn:end-1])) == sum(runtime)
     @test convert(Matrix,plan[:,schedulcolumn:end-1]) == convert(Matrix,output[:,schedulcolumn:end-1])
     @test sum(convert(Matrix,uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="off")[:,schedulcolumn:end-1])) == sum(runtime)
-    @test sum(convert(Matrix,uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="GR")[:,schedulcolumn:end-1])) == sum(runtime)
+    @test sum(convert(Matrix,uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="GR")[:,schedulcolumn:end-1])) == sum(runtime) 
     @test sum(convert(Matrix,uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="それ以外")[:,schedulcolumn:end-1])) == sum(runtime)
     @test uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="それ以外",checkreturn=true)[2]
     @test createtimeset()[1][1]=="00:00"

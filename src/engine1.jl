@@ -227,7 +227,11 @@ function uipathorchestratorschedulreadjustmentsub1(schedulesubplan::DataFrame,ro
  
    ## スケジュール案表示
    subplan=zeros(Int,jobn,timen)
-   subplan=map(Int,map(round,JuMP.value.(s)))
+   try
+    subplan=map(Int,map(round,JuMP.value.(s)))
+   catch
+    subplan=zeros(Int,jobn,timen)
+   end
  
  return subplan
 end
