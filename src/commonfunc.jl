@@ -1,4 +1,15 @@
-# 時刻のデータセットを作成
+"""
+    createtimeset()
+
+# 処理概要
+時刻のデータセットを作成
+
+# 引数
+* なし
+
+# 結果（戻り値）
+* 時間の組み合わせ（文字列）
+"""
 function createtimeset()
   timemaster=Matrix{String}(undef,1,1441)
   HH=["00","01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23"]
@@ -18,7 +29,19 @@ function createtimeset()
   return timemaster,timessymbol,timesdate
 end
 
-# 処理時間が連続しているか確認
+
+"""
+    ContinuousOperation(x...)
+
+# 処理概要
+処理時間が連続しているか確認
+
+# 引数
+* `x`:
+
+# 結果（戻り値）
+* 連続している時間数
+"""
 function ContinuousOperation(x...) 
   sigma=0
   for i in 1:length(x)-1

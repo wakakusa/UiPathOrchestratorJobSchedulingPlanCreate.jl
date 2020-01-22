@@ -13,9 +13,10 @@ include("output.jl")
 """
     uipathorchestratorschedulrecreate(ExcelFilePath::String,parameters::String,schedule::String;planexport::Bool=false,ExportExcelFilePath::String="",plotengine="PlotlyJS",schedulcolumn::Int=6)
 
-処理概要:スケジュール作成
+# 処理概要
+スケジュール作成
 
-# Arguments
+# 引数
 * `ExcelFilePath`:スケジュール作成に必要な情報が記載されたExcelファイルのフルパスを指定。
 * `parameters`:パラメーターが記載されたシート名を指定
 * `schedule`:ジョブ作成に必要な情報が記載されたシート名を指定

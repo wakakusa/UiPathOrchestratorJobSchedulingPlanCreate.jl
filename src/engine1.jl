@@ -1,9 +1,10 @@
 """
     uipathorchestratorschedulreadjustment(scheduleplan::DataFrame,robotn::Int,run_unit_time::Int,jobn::Int,timen::Int,schedulcolumn::Int=6)
 
-処理概要:スケジュール作成、処理結果の整合性確認および整形
+# 処理概要
+スケジュール作成、処理結果の整合性確認および整形
 
-# Arguments
+# 引数
 * `scheduleplan`:
 * `robotn`:
 * `run_unit_time`:ジョブ作成に必要な情報が記載されたシート名を指定
@@ -94,9 +95,10 @@ end
 """
     adjustedresultcheck(plan::Array,runtime::Array,scheduleplan::DataFrame)
 
-処理概要:スケジュール調整した結果が正しく結果かどうかチェック。作成されたスケジュールの妥当性チェック
+# 処理概要
+スケジュール調整した結果が正しく結果かどうかチェック。作成されたスケジュールの妥当性チェック
 
-# Arguments
+# 引数
 * `plan`:uipathorchestratorschedulreadjustmentの実行結果を指定
 * `runtime`:readprerequisiteで読み込んだ結果を指定
 * `uipathorchestratorschedulreadjustment`:readprerequisiteで読み込んだ結果を指定

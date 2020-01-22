@@ -1,10 +1,11 @@
 """
     plotplanmaster(plan::DataFrame,schedulcolumn::Int=6)
 
-処理概要:スケジュール調整した結果をグラフに出力
+# 処理概要
+スケジュール調整した結果をグラフに出力
 * 注意：グラフ描画エンジンの指定が必要。詳細はパッケージ：Plotsの利用方法を参照
 
-# Arguments
+# 引数
 * `plan`:adjustedresultcheckの実行結果を指定
 * `schedulcolumn`:スケジュールON,OFF開始列を指定（デフォルト：６）
 
@@ -25,9 +26,10 @@ end
 """
     plotplangr(plan::DataFrame,schedulcolumn::Int=6)
 
-処理概要:スケジュール調整した結果をGRを使ってグラフに出力
+# 処理概要
+スケジュール調整した結果をGRを使ってグラフに出力
 
-# Arguments
+# 引数
 * `plan`:adjustedresultcheckの実行結果を指定
 * `schedulcolumn`:スケジュールON,OFF開始列を指定（デフォルト：６）
 
@@ -45,9 +47,10 @@ end
 """
     plotplanplotlyjs(plan::DataFrame,schedulcolumn::Int=6)
 
-処理概要:スケジュール調整した結果をPlotlyJSを使ってグラフに出力
+# 処理概要
+スケジュール調整した結果をPlotlyJSを使ってグラフに出力
 
-# Arguments
+# 引数
 * `plan`:adjustedresultcheckの実行結果を指定
 * `schedulcolumn`:スケジュールON,OFF開始列を指定（デフォルト：６）
 
@@ -65,9 +68,10 @@ end
 """
     exportplan(plan::DataFrame;ExcelFilePath::String="")
 
-処理概要:スケジュール調整した結果をExcelファイルに出力
+# 処理概要
+スケジュール調整した結果をExcelファイルに出力
 
-# Arguments
+# 引数
 * `plan`:adjustedresultcheckの実行結果を指定
 * `ExcelFilePath`:出力ファイル名をフルパスで記載。指定しない場合は、カレントディレクトリ（フォルダ）に"UiPathOrchestratorJobSchedulingPlan.xlsx"名で出力
 """
