@@ -12,11 +12,14 @@ include("output.jl")
 """
     UiPathOrchestratorJobSchedulingPlanCreate
 
+# 処理概要
+UiPathOrchestratorのジョブスケジューリング案の作成
 
-# 処理基本
-    ExcelFilePath=""
-    uipathorchestratorschedulrecreate(ExcelFilePath::String,"parameters","schedule",plotengine="GR")
+# 使い方
+ExcelFilePath=""
+uipathorchestratorschedulrecreate(ExcelFilePath,"parameters2,"schedule",plotengine="GR")
 """
+
 """
     uipathorchestratorschedulrecreate(ExcelFilePath::String,parameters::String,schedule::String;planexport::Bool=false,ExportExcelFilePath::String="",plotengine="PlotlyJS",schedulcolumn::Int=6)
 
