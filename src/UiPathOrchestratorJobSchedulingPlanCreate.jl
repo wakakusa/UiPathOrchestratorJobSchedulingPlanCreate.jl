@@ -17,7 +17,7 @@ UiPathOrchestratorのジョブスケジューリング案の作成
 
 # 使い方
 ExcelFilePath=""
-uipathorchestratorschedulrecreate(ExcelFilePath,"parameters2,"schedule",plotengine="GR")
+uipathorchestratorschedulrecreate(ExcelFilePath,"parameters","schedule",plotengine="GR")
 """
 
 """
