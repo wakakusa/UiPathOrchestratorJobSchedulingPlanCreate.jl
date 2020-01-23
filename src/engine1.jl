@@ -5,7 +5,7 @@
 スケジュール作成、処理結果の整合性確認および整形
 
 # 引数
-* `scheduleplan`:
+* `scheduleplan`:スケジュール作成のために必要な諸元
 * `robotn`:
 * `run_unit_time`:ジョブ作成に必要な情報が記載されたシート名を指定
 * `jobn`:
@@ -101,8 +101,7 @@ end
 # 引数
 * `plan`:uipathorchestratorschedulreadjustmentの実行結果を指定
 * `runtime`:readprerequisiteで読み込んだ結果を指定
-* `uipathorchestratorschedulreadjustment`:readprerequisiteで読み込んだ結果を指定
-* `schedulcolumn`:スケジュールON,OFF開始列を指定（デフォルト：６）
+* `scheduleplan`:スケジュール作成のために必要な諸元
 
 # 結果（戻り値）
 スケジュール調整結果を出力
