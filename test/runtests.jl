@@ -31,7 +31,7 @@ using UiPathOrchestratorJobSchedulingPlanCreate
     col9=Array{Any}([missing,missing,missing,missing,missing,missing,missing,missing,missing,missing])
 #    DataFrame作成
     schedule=DataFrame(jobname=jobname,runtime=runtime,Specifiedtime=Specifiedtime,JobStartTime=JobStartTime,JobEndTime=JobEndTime,col1=col1,col2=col2,col3=col3,col4=col4,col5=col5,col6=col6,col7=col7,col8=col8,col9=col9)
-    names!(schedule,[:jobname,:runtime,:Specifiedtime,:JobStartTime,:JobEndTime,Symbol("0:00"),Symbol("0:15"),Symbol("0:30"),Symbol("0:45"),Symbol("1:00"),Symbol("1:15"),Symbol("1:30"),Symbol("1:45"),Symbol("2:00")])
+    rename!(schedule,[:jobname,:runtime,:Specifiedtime,:JobStartTime,:JobEndTime,Symbol("0:00"),Symbol("0:15"),Symbol("0:30"),Symbol("0:45"),Symbol("1:00"),Symbol("1:15"),Symbol("1:30"),Symbol("1:45"),Symbol("2:00")])
 
     InputFilePath=joinpath(@__DIR__, "schedule.xlsx")
     OutputFilePath=joinpath(@__DIR__, "scheduleoutput.xlsx")
@@ -67,4 +67,9 @@ using UiPathOrchestratorJobSchedulingPlanCreate
     plan,runtime=uipathorchestratorschedulreadjustment(scheduleplan,robotn,run_unit_time,jobn,timen)
     @test convert(Matrix,adjustedresultcheck(plan,runtime,scheduleplan,robotn,jobn,timen)[:,schedulcolumn:end-1] ) == zeros(Int,jobn,timen)
 
+    # 特定範囲内に収める
+    scheduleplan,robotn,run_unit_time,jobn,timen=UiPathOrchestratorJobSchedulingPlanCreate.readprerequisite(InputFilePath,"parameters","schedule2")
+    robotn=1
+    plan,runtime=uipathorchestratorschedulreadjustment(scheduleplan,robotn,run_unit_time,jobn,timen)
+    @test sum(convert(Matrix,adjustedresultcheck(plan,runtime,scheduleplan,robotn,jobn,timen)[:,schedulcolumn:end-1] ) )== sum(runtime)
 end

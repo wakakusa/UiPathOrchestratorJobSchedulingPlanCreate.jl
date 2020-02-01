@@ -37,15 +37,28 @@ function uipathorchestratorschedulreadjustment(scheduleplan::DataFrame,robotn::I
   ## 制約条件
   ### ジョブ実行時間予約指定
   for i in 1:jobn
-    flag =true
-    if( convert(Bool,scheduleplan[i,:Specifiedtime]) )
+    flag1 =true
+    if scheduleplan[i,:Specifiedtime] == 1
       for j in schedulcolumn:schedulcolumn+timen-1
-        if(typeof(scheduleplan[i,j]) !=Missing && flag)
+        if typeof(scheduleplan[i,j]) !=Missing && flag1
           index=j-schedulcolumn+1
           JuMP.@constraint(m1, s[i,index:index+runtime[i]-1] .== 1.0 )
-           flag=false
+           flag1=false
         end
       end
+    elseif scheduleplan[i,:Specifiedtime] == 2
+      df = DateFormat("HH:MM");
+      StartTime=DateTime(scheduleplan[i,:JobStartTime],df)
+      EndTime=DateTime(scheduleplan[i,:JobEndTime],df)
+      for j in schedulcolumn:schedulcolumn+timen-1
+        if DateTime(string(names(scheduleplan)[j]),df) >= StartTime && DateTime(string(names(scheduleplan)[j]),df) < EndTime
+        else
+          JuMP.@constraint(m1, s[i,j-schedulcolumn+1] == 0.0 )
+        end
+      end
+    elseif scheduleplan[i,:Specifiedtime] == 0
+    else
+      println(i,"行目の指定パターンを確認してください")
     end
   end
 
