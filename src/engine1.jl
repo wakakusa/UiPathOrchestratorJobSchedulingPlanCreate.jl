@@ -56,7 +56,7 @@ function uipathorchestratorschedulreadjustment(scheduleplan::DataFrame,robotn::I
           JuMP.@constraint(m1, s[i,j-schedulcolumn+1] == 0.0 )
         end
       end
-    elseif scheduleplan[i,:Specifiedtime] == 0
+    elseif scheduleplan[i,:Specifiedtime] == 0 || ismissing(scheduleplan[i,:Specifiedtime])
     else
       println(i,"行目の指定パターンを確認してください")
     end
@@ -152,7 +152,7 @@ adjustedresultcheckmastarflag .= true
     end
   end
 
-  if(sum(adjustedresultcheckmastarflag) != size(adjustedresultcheckmastarflag)[1]*size(adjustedresultcheckmastarflag)[2])
+  if sum(adjustedresultcheckmastarflag) != size(adjustedresultcheckmastarflag,1)*size(adjustedresultcheckmastarflag,2)
     plan=zeros(Int,jobn,timen)
     adjustedresultcheckflag = false
   end
@@ -164,17 +164,17 @@ adjustedresultcheckmastarflag .= true
   #処理開始時間および終了時間を取得
   times=names(scheduleplan)
 
-  for i in 1 :  size(scheduleplan)[1]
+  for i in 1 :  size(scheduleplan,1)
     startflag=true
     endflag=true
 
-    for j in schedulcolumn : size(scheduleplan)[2]
+    for j in schedulcolumn : size(scheduleplan,2)
       if(result[i,j] == 1 && startflag)
         startflag = false
         result[i,:JobStartTime]=string(times[j])
       end
 
-      if(result[i,j] == 0 && !startflag && endflag )
+      if result[i,j] == 0 && !startflag && endflag
         endflag = false
         result[i,:JobEndTime]=string(times[j])
       end
@@ -183,7 +183,13 @@ adjustedresultcheckmastarflag .= true
 
   result[:,end] .=missing
 
-  if(checkreturn)
+  # 調整が失敗した場合明示的にわかるように、JobStartTime,JobEndTimeを空白にする
+  if !adjustedresultcheckflag
+    result[:,:JobStartTime] .= missing
+    result[:,:JobEndTime].= missing
+  end
+
+  if checkreturn
     return result,adjustedresultcheckflag
   else
     return result

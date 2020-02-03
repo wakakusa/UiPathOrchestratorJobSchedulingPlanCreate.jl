@@ -1,5 +1,5 @@
 """
-    plotplanmaster(plan::DataFrame,schedulcolumn::Int=6)
+    plotplanmaster(plan::DataFrame;schedulcolumn::Int=6)
 
 # 処理概要
 スケジュール調整した結果をグラフに出力
@@ -24,7 +24,7 @@ end
 
 
 """
-    plotplangr(plan::DataFrame,schedulcolumn::Int=6)
+    plotplangr(plan::DataFrame;schedulcolumn::Int=6)
 
 # 処理概要
 スケジュール調整した結果をGRを使ってグラフに出力
@@ -45,7 +45,7 @@ end
 
 
 """
-    plotplanplotlyjs(plan::DataFrame,schedulcolumn::Int=6)
+    plotplanplotlyjs(plan::DataFrame;schedulcolumn::Int=6)
 
 # 処理概要
 スケジュール調整した結果をPlotlyJSを使ってグラフに出力
