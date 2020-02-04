@@ -37,6 +37,7 @@ end
 * グラフ出力
 """
 function plotplangr(plan::DataFrame;schedulcolumn::Int=6)
+  ENV["GKS_ENCODING"]="utf-8"
   gr()
 
   plot=plotplanmaster(plan,schedulcolumn=schedulcolumn)
