@@ -121,7 +121,7 @@ end
 """
 function adjustedresultcheck(plan::Array,runtime::Array,scheduleplan::DataFrame,robotn::Int,jobn::Int,timen::Int;schedulcolumn::Int=6,checkreturn::Bool=false)
 adjustedresultcheckflag=true
-adjustedresultcheckmastarflag=Array{Bool}(undef,jobn,3)
+adjustedresultcheckmastarflag=Array{Bool}(undef,jobn,3) # #1:ジョブごとに実行時間確保されているかチェック,#2:ロボット数超過,#3:処理時間が連続しているか
 adjustedresultcheckmastarflag .= true
 
   #ジョブごとに実行時間確保されているかチェック
@@ -139,8 +139,8 @@ adjustedresultcheckmastarflag .= true
 
   # ロボット数超過していないか確認
   for i in 1:timen
-    if(sum(plan[:,i]) > robotn)
-      adjustedresultcheckmastarflag[i,2]=false
+    if sum(plan[:,i]) > robotn
+      adjustedresultcheckmastarflag[:,2] .=false
     end
   end
 
