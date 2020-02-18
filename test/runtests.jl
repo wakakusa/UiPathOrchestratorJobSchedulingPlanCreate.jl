@@ -62,6 +62,10 @@ using UiPathOrchestratorJobSchedulingPlanCreate
     @test isfile(OutputTestFilePath)
     rm(OutputTestFilePath)
 
+    exportplan(plan,robotn,run_unit_time,ExcelFilePath=OutputTestFilePath)
+    @test isfile(OutputTestFilePath)
+    rm(OutputTestFilePath)
+
     #ジョブスケジュール作成失敗の場合のテスト
     robotn=1
     plan,runtime=uipathorchestratorschedulreadjustment(scheduleplan,robotn,run_unit_time,jobn,timen)

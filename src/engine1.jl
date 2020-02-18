@@ -6,10 +6,10 @@
 
 # 引数
 * `scheduleplan`:スケジュール作成のために必要な諸元
-* `robotn`:
-* `run_unit_time`:ジョブ作成に必要な情報が記載されたシート名を指定
-* `jobn`:
-* `timen`:
+* `robotn`:同時最大稼働ロボット数
+* `run_unit_time`:実行単位時間、コマ割時間
+* `jobn`:ジョブ数
+* `timen`:時間コマ数
 * `schedulcolumn`:スケジュールON,OFF開始列を指定（デフォルト：６）
 
 # 結果（戻り値）
@@ -17,7 +17,7 @@
 """
 function uipathorchestratorschedulreadjustment(scheduleplan::DataFrame,robotn::Int,run_unit_time::Int,jobn::Int,timen::Int;schedulcolumn::Int=6)
 ## 数理モデル
- m1 = JuMP.Model(with_optimizer(Ipopt.Optimizer))
+ m1 = JuMP.Model(Ipopt.Optimizer)
 
   ## 変数
  JuMP.@variable(m1, 0<=s[1:jobn,1:timen] <=1 ) #ジョブ毎のコマ割りごとに実行有無を表示
@@ -200,7 +200,7 @@ end
 # スケジュール作成サブ１
 function uipathorchestratorschedulreadjustmentsub1(schedulesubplan::DataFrame,robotn::Int,run_unit_time::Int,jobn::Int,timen::Int;schedulcolumn::Int=6)
   ## 数理モデル
-  msub1 = JuMP.Model(with_optimizer(Cbc.Optimizer))
+  msub1 = JuMP.Model(Cbc.Optimizer)
  
    ## 変数
   JuMP.@variable(msub1, s[1:jobn,1:timen] ,Bin ) #ジョブ毎のコマ割りごとに実行有無を表示

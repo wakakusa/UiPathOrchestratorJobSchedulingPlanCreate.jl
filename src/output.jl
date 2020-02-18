@@ -83,3 +83,26 @@ function exportplan(plan::DataFrame;ExcelFilePath::String="")
  
  XLSX.writetable(ExcelFilePath, REPORT_jobplan=( collect(DataFrames.eachcol(plan)), DataFrames.names(plan) )  )
 end
+
+
+"""
+    exportplan(plan::DataFrame,robotn::Int,run_unit_time::Int;ExcelFilePath::String="")
+
+# 処理概要
+スケジュール調整した結果をExcelファイルに出力
+
+# 引数
+* `plan`:adjustedresultcheckの実行結果を指定
+* `robotn`:
+* `run_unit_time`:
+* `ExcelFilePath`:出力ファイル名をフルパスで記載。指定しない場合は、カレントディレクトリ（フォルダ）に"UiPathOrchestratorJobSchedulingPlan.xlsx"名で出力
+"""
+function exportplan(plan::DataFrame,robotn::Int,run_unit_time::Int;ExcelFilePath::String="")
+  if(ExcelFilePath=="")
+    ExcelFilePath="UiPathOrchestratorJobSchedulingPlan.xlsx"
+  end
+
+  parameters=DataFrame(parameter=["run_unit_time","all_run_robot"],Int=[robotn,run_unit_time],unit=["min",""],説明=["スケジュール実行単位","割り当て可能ロボット総数"])
+
+  XLSX.writetable(ExcelFilePath, REPORT_parameters=( collect(DataFrames.eachcol(parameters)), DataFrames.names(parameters) ) ,REPORT_jobplan=( collect(DataFrames.eachcol(plan)), DataFrames.names(plan) )  )
+end
