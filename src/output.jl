@@ -102,7 +102,7 @@ function exportplan(plan::DataFrame,robotn::Int,run_unit_time::Int;ExcelFilePath
     ExcelFilePath="UiPathOrchestratorJobSchedulingPlan.xlsx"
   end
 
-  parameters=DataFrame(parameter=["run_unit_time","all_run_robot"],Int=[robotn,run_unit_time],unit=["min",""],説明=["スケジュール実行単位","割り当て可能ロボット総数"])
+  parameters=DataFrame(parameter=["run_unit_time","all_run_robot"],Int=[run_unit_time,robotn],unit=["min",""],説明=["スケジュール実行単位","割り当て可能ロボット総数"])
 
   XLSX.writetable(ExcelFilePath, REPORT_parameters=( collect(DataFrames.eachcol(parameters)), DataFrames.names(parameters) ) ,REPORT_jobplan=( collect(DataFrames.eachcol(plan)), DataFrames.names(plan) )  )
 end

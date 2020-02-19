@@ -60,10 +60,13 @@ using UiPathOrchestratorJobSchedulingPlanCreate
     OutputTestFilePath=joinpath(@__DIR__, "TestUiPathOrchestratorJobSchedulingPlan.xlsx")
     uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="off",planexport=true,ExportExcelFilePath=OutputTestFilePath)
     @test isfile(OutputTestFilePath)
+    @test DataFrames.DataFrame(XLSX.readtable(OutputTestFilePath, "REPORT_jobplan")...)[1:5,1:5] == schedule[1:5,1:5]
     rm(OutputTestFilePath)
 
     exportplan(plan,robotn,run_unit_time,ExcelFilePath=OutputTestFilePath)
     @test isfile(OutputTestFilePath)
+    @test DataFrames.DataFrame(XLSX.readtable(OutputTestFilePath, "REPORT_parameters")...)[2,2] == robotn 
+    @test DataFrames.DataFrame(XLSX.readtable(OutputTestFilePath, "REPORT_jobplan")...)[1:5,1:5] == schedule[1:5,1:5]
     rm(OutputTestFilePath)
 
     #ジョブスケジュール作成失敗の場合のテスト
