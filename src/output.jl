@@ -16,7 +16,7 @@ function plotplanmaster(plan::DataFrame;schedulcolumn::Int=6)
   xs = map(String,names(plan)[schedulcolumn:end] )
   ys = map(String,plan[:,:jobname])
 
-  plot=Plots.heatmap(xs, ys, convert(Matrix,plan[:,schedulcolumn:end]), legend=false,c=ColorGradient([:white,:blue]))
+  plot=Plots.heatmap(xs, ys, convert(Matrix,plan[:,schedulcolumn:end]), legend=false,c=cgrad([:white,:blue]))
 
   return plot
 

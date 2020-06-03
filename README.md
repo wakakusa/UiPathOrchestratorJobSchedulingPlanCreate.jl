@@ -1,5 +1,8 @@
 # UiPathOrchestratorJobSchedulingPlanCreate
 
+![CI](https://github.com/wakakusa/UiPathOrchestratorJobSchedulingPlanCreate.jl/workflows/CI/badge.svg)
+[![codecov](https://codecov.io/gh/wakakusa/UiPathOrchestratorJobSchedulingPlanCreate.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/wakakusa/UiPathOrchestratorJobSchedulingPlanCreate.jl)
+
 [![Build Status](https://travis-ci.org/wakakusa/UiPathOrchestratorJobSchedulingPlanCreate.jl.svg?branch=master)](https://travis-ci.org/wakakusa/UiPathOrchestratorJobSchedulingPlanCreate.jl)
 [![Coverage Status](https://coveralls.io/repos/github/wakakusa/UiPathOrchestratorJobSchedulingPlanCreate.jl/badge.svg?branch=master)](https://coveralls.io/github/wakakusa/UiPathOrchestratorJobSchedulingPlanCreate.jl?branch=master)
 
