@@ -47,7 +47,8 @@ using UiPathOrchestratorJobSchedulingPlanCreate
     plan,runtime=uipathorchestratorschedulreadjustment(scheduleplan,robotn,run_unit_time,jobn,timen)
     plan=adjustedresultcheck(plan,runtime,scheduleplan,robotn,jobn,timen)
     @test sum(convert(Matrix,plan[:,schedulcolumn:end-1])) == sum(runtime)
-    @test convert(Matrix,plan[:,schedulcolumn:end-1]) == convert(Matrix,output[:,schedulcolumn:end-1])
+#    @test convert(Matrix,plan[:,schedulcolumn:end-1]) == convert(Matrix,output[:,schedulcolumn:end-1])
+    @test plan[:,schedulcolumn:end-1] == output[:,schedulcolumn:end-1]
     @test sum(convert(Matrix,uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="off")[:,schedulcolumn:end-1])) == sum(runtime)
     @test sum(convert(Matrix,uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="GR")[:,schedulcolumn:end-1])) == sum(runtime) 
     @test sum(convert(Matrix,uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="それ以外")[:,schedulcolumn:end-1])) == sum(runtime)
