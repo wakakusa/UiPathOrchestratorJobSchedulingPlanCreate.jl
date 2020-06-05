@@ -48,9 +48,11 @@ using UiPathOrchestratorJobSchedulingPlanCreate
     plan=adjustedresultcheck(plan,runtime,scheduleplan,robotn,jobn,timen)
     @test sum(convert(Matrix,plan[:,schedulcolumn:end-1])) == sum(runtime)
 #    @test convert(Matrix,plan[:,schedulcolumn:end-1]) == convert(Matrix,output[:,schedulcolumn:end-1])
-    @test plan[:,schedulcolumn:end-1] == output[:,schedulcolumn:end-1]
+    @test plan[:,schedulcolumn:6] == output[:,schedulcolumn:6]
+    @test plan[:,8:end-1] == output[:,8:end-1]
     @test sum(convert(Matrix,uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="off")[:,schedulcolumn:end-1])) == sum(runtime)
-    @test sum(convert(Matrix,uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="GR")[:,schedulcolumn:end-1])) == sum(runtime) 
+    @test sum(convert(Matrix,uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="GR")[:,schedulcolumn:end-1])) == sum(runtime)
+    @test sum(convert(Matrix,uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="PlotlyJS")[:,schedulcolumn:end-1])) == sum(runtime)
     @test sum(convert(Matrix,uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="それ以外")[:,schedulcolumn:end-1])) == sum(runtime)
     @test uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="それ以外",checkreturn=true)[2]
     @test createtimeset()[1][1]=="00:00"
