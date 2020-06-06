@@ -48,8 +48,8 @@ using UiPathOrchestratorJobSchedulingPlanCreate
     plan=adjustedresultcheck(plan,runtime,scheduleplan,robotn,jobn,timen)
     @test sum(convert(Matrix,plan[:,schedulcolumn:end-1])) == sum(runtime)
 #    @test convert(Matrix,plan[:,schedulcolumn:end-1]) == convert(Matrix,output[:,schedulcolumn:end-1])
-    @test plan[:,schedulcolumn:6] == output[:,schedulcolumn:6]
-    @test plan[:,8:end-1] == output[:,8:end-1]
+    @test convert(Matrix,plan[1:7,schedulcolumn:end-1]) == convert(Matrix,output[1:7,schedulcolumn:end-1])
+    @test convert(Matrix,plan[9:10,schedulcolumn:end-1]) == convert(Matrix,output[9:10,schedulcolumn:end-1])
     @test sum(convert(Matrix,uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="off")[:,schedulcolumn:end-1])) == sum(runtime)
     @test sum(convert(Matrix,uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="GR")[:,schedulcolumn:end-1])) == sum(runtime)
     #@test sum(convert(Matrix,uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="PlotlyJS")[:,schedulcolumn:end-1])) == sum(runtime)
