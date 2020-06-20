@@ -42,6 +42,7 @@ function plotplangr(plan::DataFrame;schedulcolumn::Int=6)
 
   plot=plotplanmaster(plan,schedulcolumn=schedulcolumn)
   gui(plot)
+  return plot
 end
 
 
@@ -63,6 +64,7 @@ function plotplanplotlyjs(plan::DataFrame;schedulcolumn::Int=6)
 
   plot=plotplanmaster(plan,schedulcolumn=schedulcolumn)
   gui(plot)
+  return plot
 end
 
 
