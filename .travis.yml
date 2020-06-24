@@ -17,6 +17,12 @@ jobs:
   allow_failures:
     - julia: nightly
 after_success:
+#  - |
+#    julia -e '
+#      using Pkg
+#      Pkg.add("Coverage")
+#      using Coverage
+#      Codecov.submit(process_folder())'
   - |
     julia -e '
       using Pkg

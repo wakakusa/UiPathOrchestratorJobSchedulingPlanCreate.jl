@@ -18,9 +18,10 @@ jobs:
 #          - windows-latest
         arch:
           - x64
-        exclude:
-          - os: macOS-latest
-            arch: x86
+#          - x86
+#        exclude:
+#          - os: macOS-latest
+#            arch: x86
     steps:
       - uses: actions/checkout@v2
       - uses: julia-actions/setup-julia@v1
@@ -32,6 +33,9 @@ jobs:
       - uses: julia-actions/julia-uploadcodecov@latest
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      - uses: julia-actions/julia-uploadcoveralls@latest
+        env:
+          COVERALLS_TOKEN: ${{ secrets.COVERALLS_TOKEN }}
   docs:
     name: Documentation
     runs-on: ubuntu-latest
