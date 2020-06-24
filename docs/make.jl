@@ -13,6 +13,9 @@ makedocs(;
     ),
     pages=[
         "Home" => "index.md",
+        "Getting Started" => "getting_started.md",
+        "Function" => "function.md",
+        "Excel" => "excel.md",
     ],
 )
 
