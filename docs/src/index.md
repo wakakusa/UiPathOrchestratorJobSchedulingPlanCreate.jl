@@ -5,7 +5,7 @@ Uipath Orchestatorで効率的なジョブ実行（必要最低限のロボッ�
 
 ## インストール方法
 julia>]  
-(v1.1) add https://github.com/wakakusa/UiPathOrchestratorJobSchedulingPlanCreate.git  
+(v1.4) add https://github.com/wakakusa/UiPathOrchestratorJobSchedulingPlanCreate.git  
 でプログラムがインストールされます。括弧内の数字は、利用しているバージョンが表示されます。
 
 ## クイックガイド

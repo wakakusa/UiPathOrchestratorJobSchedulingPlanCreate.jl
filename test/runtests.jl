@@ -52,7 +52,6 @@ using UiPathOrchestratorJobSchedulingPlanCreate
     @test convert(Matrix,plan[9:10,schedulcolumn:end-1]) == convert(Matrix,output[9:10,schedulcolumn:end-1])
     @test sum(convert(Matrix,uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="off")[:,schedulcolumn:end-1])) == sum(runtime)
     @test sum(convert(Matrix,uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="GR")[:,schedulcolumn:end-1])) == sum(runtime)
-#    @test sum(convert(Matrix,uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="PlotlyJS")[:,schedulcolumn:end-1])) == sum(runtime)
     @test sum(convert(Matrix,uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="それ以外")[:,schedulcolumn:end-1])) == sum(runtime)
     @test uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="それ以外",checkreturn=true)[2]
     @test createtimeset()[1][1]=="00:00"
@@ -71,6 +70,12 @@ using UiPathOrchestratorJobSchedulingPlanCreate
     @test DataFrames.DataFrame(XLSX.readtable(OutputTestFilePath, "REPORT_parameters")...)[2,2] == robotn 
     @test DataFrames.DataFrame(XLSX.readtable(OutputTestFilePath, "REPORT_jobplan")...)[1:5,1:5] == schedule[1:5,1:5]
     rm(OutputTestFilePath)
+
+    # PlotlyJSを別途追加
+    using Pkg
+    Pkg.add("PlotlyJS")
+    using PlotlyJS
+    @test sum(convert(Matrix,uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="PlotlyJS")[:,schedulcolumn:end-1])) == sum(runtime)
 
     #ジョブスケジュール作成失敗の場合のテスト
     robotn=1

@@ -2,7 +2,7 @@ module UiPathOrchestratorJobSchedulingPlanCreate
 using LinearAlgebra,Dates,StatsBase
 using JuMP,Ipopt,Cbc
 using DataFrames,XLSX
-using Plots,GR,PlotlyJS
+using Plots,GR
 
 include("input.jl")
 include("commonfunc.jl")

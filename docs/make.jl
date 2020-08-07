@@ -16,6 +16,7 @@ makedocs(;
         "Getting Started" => "getting_started.md",
         "Function" => "function.md",
         "Excel" => "excel.md",
+        "Hint" => "hints.md",
     ],
 )
 
