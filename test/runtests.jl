@@ -71,6 +71,8 @@ using UiPathOrchestratorJobSchedulingPlanCreate
     # PlotlyJSを別途追加
     using Pkg
     Pkg.add("PlotlyJS")
+    Pkg.add("Blink")
+    Pkg.add("ORCA")
     using PlotlyJS
     @test sum(convert(Matrix,uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="PlotlyJS")[:,schedulcolumn:end-1])) == sum(runtime)
 
