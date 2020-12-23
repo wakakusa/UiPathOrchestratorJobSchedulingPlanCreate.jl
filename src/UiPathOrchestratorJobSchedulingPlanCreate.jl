@@ -39,12 +39,12 @@ uipathorchestratorschedulrecreate(ExcelFilePath,"parameters","schedule",plotengi
 スケジュール調整結果を出力
 """
 function uipathorchestratorschedulrecreate(ExcelFilePath::String,parameters::String,schedule::String;planexport::Bool=false,ExportExcelFilePath::String="",plotengine="PlotlyJS",schedulcolumn::Int=6,checkreturn::Bool=false)
-  scheduleplan,robotn,run_unit_time,jobn,timen=readprerequisite(ExcelFilePath,parameters,schedule,schedulcolumn=schedulcolumn)
-  plan,runtime=uipathorchestratorschedulreadjustment(scheduleplan,robotn,run_unit_time,jobn,timen,schedulcolumn=schedulcolumn)
+  scheduleplan,robotn,run_unit_time,jobn,timen,schedule,blocktime_start,blocktime_end,blocktime_dow=readprerequisite(ExcelFilePath,parameters,schedule,schedulcolumn=schedulcolumn)
+  plan,runtime=uipathorchestratorschedulreadjustment(scheduleplan,robotn,run_unit_time,jobn,timen,schedule,blocktime_start,blocktime_end,blocktime_dow,schedulcolumn=schedulcolumn)
   if(checkreturn)
-    plan,adjustedresultcheckflag=adjustedresultcheck(plan,runtime,scheduleplan,robotn,jobn,timen,schedulcolumn=schedulcolumn,checkreturn=checkreturn)
+    plan,adjustedresultcheckflag=adjustedresultcheck(plan,runtime,scheduleplan,robotn,jobn,timen,schedule,blocktime_start,blocktime_end,blocktime_dow,schedulcolumn=schedulcolumn,checkreturn=checkreturn)
   else
-    plan=adjustedresultcheck(plan,runtime,scheduleplan,robotn,jobn,timen,schedulcolumn=schedulcolumn,checkreturn=checkreturn)
+    plan=adjustedresultcheck(plan,runtime,scheduleplan,robotn,jobn,timen,schedule,blocktime_start,blocktime_end,blocktime_dow,schedulcolumn=schedulcolumn,checkreturn=checkreturn)
   end
 
   if(plotengine=="PlotlyJS")
