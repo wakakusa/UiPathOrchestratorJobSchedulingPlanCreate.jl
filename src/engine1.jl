@@ -127,7 +127,7 @@ function uipathorchestratorschedulreadjustment(scheduleplan::DataFrame,robotn::I
         end
       end
 
-      plan = uipathorchestratorschedulreadjustmentsub1(schedulesubplan,robotn,run_unit_time,jobn,timen,schedule,blocktime_start,blocktime_end,schedulcolumn=schedulcolumn)
+      plan = uipathorchestratorschedulreadjustmentsub1(schedulesubplan,robotn,run_unit_time,jobn,timen,schedule,blocktime_start,blocktime_end,blocktime_dow,schedulcolumn=schedulcolumn)
     end
 
     return plan,runtime
@@ -135,7 +135,7 @@ end
 
 
 """
-adjustedresultcheck(plan::Array,runtime::Array,scheduleplan::DataFrame,robotn::Int,jobn::Int,timen::Int,blocktime_start::String,blocktime_end::String;schedulcolumn::Int=6,checkreturn::Bool=false)
+adjustedresultcheck(plan::Array,runtime::Array,scheduleplan::DataFrame,robotn::Int,jobn::Int,timen::Int,blocktime_start::String,blocktime_end::String,blocktime_dow::String;schedulcolumn::Int=6,checkreturn::Bool=false)
 
 # 処理概要
 スケジュール調整した結果が正しく結果かどうかチェック。作成されたスケジュールの妥当性チェック
@@ -271,7 +271,7 @@ end
 
 
 """
-uipathorchestratorschedulreadjustmentsub1(schedulesubplan,robotn,run_unit_time,jobn,timen,blocktime_start,blocktime_end;schedulcolumn::Int=6)
+uipathorchestratorschedulreadjustmentsub1(schedulesubplan,robotn,run_unit_time,jobn,timen,blocktime_start,blocktime_end,blocktime_dow;schedulcolumn::Int=6)
 
 # 処理概要
 スケジュール調整した結果が正しく結果かどうかチェック。作成されたスケジュールの妥当性チェック
@@ -292,7 +292,7 @@ uipathorchestratorschedulreadjustmentsub1(schedulesubplan,robotn,run_unit_time,j
 スケジュール調整結果を出力
 """
 # スケジュール作成サブ１
-function uipathorchestratorschedulreadjustmentsub1(schedulesubplan::DataFrame,robotn::Int,run_unit_time::Int,jobn::Int,timen::Int,schedule::String,blocktime_start::String,blocktime_end::String;schedulcolumn::Int=6)
+function uipathorchestratorschedulreadjustmentsub1(schedulesubplan::DataFrame,robotn::Int,run_unit_time::Int,jobn::Int,timen::Int,schedule::String,blocktime_start::String,blocktime_end::String,blocktime_dow::String;schedulcolumn::Int=6)
   ## 数理モデル
   msub1 = JuMP.Model(Cbc.Optimizer)
  
