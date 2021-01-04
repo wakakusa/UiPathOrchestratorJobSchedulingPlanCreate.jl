@@ -1,5 +1,5 @@
 """
-    uipathorchestratorschedulreadjustment(scheduleplan::DataFrame,robotn::Int,run_unit_time::Int,jobn::Int,timen::Int,schedule::String,blocktime_start::String,blocktime_end::String,blocktime_dow::String;schedulcolumn::Int=6)
+    uipathorchestratorschedulreadjustment(scheduleplan::DataFrame,robotn::Int,run_unit_time::Int,jobn::Int,timen::Int,schedule::String,blocktime_start::String,blocktime_end::String,blocktime_dow::String;schedulcolumn::Int=6,formulaprint::Bool=false)
 
 # 処理概要
 スケジュール作成、処理結果の整合性確認および整形
@@ -15,11 +15,12 @@
 * `blocktime_end`:実行禁止時間帯（終了）
 * `blocktime_dow`:実行禁止時間帯設定をするシート名
 * `schedulcolumn`:スケジュールON,OFF開始列を指定（デフォルト：６）
+* `formulaprint`:数理計画の数式を表示する
 
 # 結果（戻り値）
 スケジュール調整結果を出力
 """
-function uipathorchestratorschedulreadjustment(scheduleplan::DataFrame,robotn::Int,run_unit_time::Int,jobn::Int,timen::Int,schedule::String,blocktime_start::String,blocktime_end::String,blocktime_dow::String;schedulcolumn::Int=6)
+function uipathorchestratorschedulreadjustment(scheduleplan::DataFrame,robotn::Int,run_unit_time::Int,jobn::Int,timen::Int,schedule::String,blocktime_start::String,blocktime_end::String,blocktime_dow::String;schedulcolumn::Int=6,formulaprint::Bool=false)
     ## 数理モデル
     m1 = JuMP.Model(Ipopt.Optimizer)
 
@@ -107,7 +108,10 @@ function uipathorchestratorschedulreadjustment(scheduleplan::DataFrame,robotn::I
         end
     end
 
-    println(m1)
+    #数式表示
+    if formulaprint
+      println(m1)
+    end
 
     ## ソルバーの実行
     status = JuMP.optimize!(m1)
