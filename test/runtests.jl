@@ -36,14 +36,14 @@ using UiPathOrchestratorJobSchedulingPlanCreate
     @test DataFrames.DataFrame(XLSX.readtable(OutputTestFilePath, "REPORT_jobplan")...)[1:5,1:5] == schedulemaster[1:5,1:5]
     rm(OutputTestFilePath)
 
-    # PlotlyJSを別途追加
+#=    # PlotlyJSを別途追加
     using Pkg
     Pkg.add("PlotlyJS")
     Pkg.add("Blink")
     Pkg.add("ORCA")
     using PlotlyJS
     @test sum(convert(Matrix,uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="PlotlyJS")[:,schedulcolumn:end-1])) == sum(runtime)
-end
+=#end
 
 @testset "ジョブスケジュール作成失敗の場合のテスト" begin
     include(joinpath(@__DIR__, "common.jl"))
@@ -63,7 +63,7 @@ end
 @testset "ブロックタイム設定" begin
     include(joinpath(@__DIR__, "common.jl"))
     scheduleplan,robotn,run_unit_time,jobn,timen,schedule,blocktime_start,blocktime_end,blocktime_dow=readprerequisite(InputFilePath,"parameters","schedule3")
-    robotn=2
+    robotn=1
     plan,runtime=uipathorchestratorschedulreadjustment(scheduleplan,robotn,run_unit_time,jobn,timen,schedule,blocktime_start,blocktime_end,blocktime_dow)
     @test sum(convert(Matrix,adjustedresultcheck(plan,runtime,scheduleplan,robotn,jobn,timen,schedule,blocktime_start,blocktime_end,blocktime_dow)[:,schedulcolumn:end-1] ) )== sum(runtime)
 end
