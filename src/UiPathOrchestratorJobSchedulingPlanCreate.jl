@@ -2,6 +2,7 @@ module UiPathOrchestratorJobSchedulingPlanCreate
 using LinearAlgebra,Dates,StatsBase
 using JuMP,Ipopt,Cbc
 using DataFrames,XLSX
+ENV["GKS_ENCODING"]="utf8"
 using Plots,GR
 
 include("input.jl")

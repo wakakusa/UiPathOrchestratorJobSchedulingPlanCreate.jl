@@ -43,7 +43,8 @@ using UiPathOrchestratorJobSchedulingPlanCreate
     Pkg.add("ORCA")
     using PlotlyJS
     @test sum(convert(Matrix,uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="PlotlyJS")[:,schedulcolumn:end-1])) == sum(runtime)
-=#end
+=#
+end
 
 @testset "ジョブスケジュール作成失敗の場合のテスト" begin
     include(joinpath(@__DIR__, "common.jl"))
