@@ -40,6 +40,29 @@ function uipathorchestratorschedulreadjustment(scheduleplan::DataFrame,robotn::I
     JuMP.@objective(m1, Min, sum(scheduleplan[1:end,:runtime])/run_unit_time-sum(s[1:jobn,1:timen] ))
 
     ## 制約条件
+    ### ブロック時間設定
+    if schedule == blocktime_dow || blocktime_dow =="all"
+      timenames=names(scheduleplan)[schedulcolumn:end]
+      blockcolstart=0
+      blockcolend=0
+
+      for i in 1:length(timenames) 
+        if timenames[i] == blocktime_start
+          blockcolstart=i
+        end
+
+        if timenames[i] == blocktime_end
+          blockcolend=i-1
+        end
+      end
+
+      for i in 1 :jobn
+        for j in blockcolstart:blockcolend
+          JuMP.@constraint(m1, s[i,j] == 0.0 )
+        end
+      end
+    end
+
     ### ジョブ実行時間予約指定
     for i in 1:jobn
       flag1 =true
@@ -85,29 +108,6 @@ function uipathorchestratorschedulreadjustment(scheduleplan::DataFrame,robotn::I
       @constraint(m1,sum(ContinuousOperation(x...))== Float64(runtime[i]-1) )
     end
   
-    ### ブロック時間設定
-    if schedule == blocktime_dow || blocktime_dow =="all"
-        timenames=names(scheduleplan)[schedulcolumn:end]
-        blockcolstart=0
-        blockcolend=0
-
-        for i in 1:length(timenames) 
-          if timenames[i] == blocktime_start
-            blockcolstart=i
-          end
-
-          if timenames[i] == blocktime_end
-            blockcolend=i-1
-          end
-        end
-
-        for i in 1 :jobn
-          for j in blockcolstart:blockcolend
-            JuMP.@constraint(m1, s[i,j] == 0.0 )
-          end
-        end
-    end
-
     #数式表示
     if formulaprint
       println(m1)
@@ -167,7 +167,7 @@ adjustedresultcheck(plan::Array,runtime::Array,scheduleplan::DataFrame,robotn::I
 function adjustedresultcheck(plan::Array,runtime::Array,scheduleplan::DataFrame,robotn::Int,jobn::Int,timen::Int,schedule::String,blocktime_start::String,blocktime_end::String,blocktime_dow::String;schedulcolumn::Int=6,checkreturn::Bool=false)
   adjustedresultcheckflag=true
   adjustedresultcheckmastarflag=Array{Bool}(undef,jobn,4) # #1:ジョブごとに実行時間確保されているかチェック,#2:ロボット数超過,#3:処理時間が連続しているか,#4:ブロック時間が設定できているか
-  adjustedresultcheckmastarflag .= true
+  adjustedresultcheckmastarflag .= false
 
   #ジョブごとに実行時間確保されているかチェック
   for i in 1:jobn
@@ -177,6 +177,8 @@ function adjustedresultcheck(plan::Array,runtime::Array,scheduleplan::DataFrame,
         adjustedresultcheckflag1=false
         if sum(plan[i,j:(j+runtime[i]-1)])!=runtime[i]
           adjustedresultcheckmastarflag[i,1]=false
+        else
+          adjustedresultcheckmastarflag[i,1]=true
         end
       end
     end
@@ -186,23 +188,23 @@ function adjustedresultcheck(plan::Array,runtime::Array,scheduleplan::DataFrame,
   for i in 1:timen
     if sum(plan[:,i]) > robotn
       adjustedresultcheckmastarflag[:,2] .=false
+    else
+      adjustedresultcheckmastarflag[:,2] .=true
     end
   end
 
   # 処理時間が連続しているか確認
   for i in 1:jobn
     x=plan[i,:]
-    if(sum(ContinuousOperation(x...))!=runtime[i]-1)
+    if sum(ContinuousOperation(x...))!=runtime[i]-1
       adjustedresultcheckmastarflag[i,3]=false
+    else
+      adjustedresultcheckmastarflag[i,3]=true
     end
   end
 
-  if sum(adjustedresultcheckmastarflag) != size(adjustedresultcheckmastarflag,1)*size(adjustedresultcheckmastarflag,2)
-    plan=zeros(Int,jobn,timen)
-    adjustedresultcheckflag = false
-  end
-
   ### ブロック時間設定チェック
+  adjustedresultcheckmastarflag[:,4] .=true #チェック状態を掛け算で算出するため
   if schedule == blocktime_dow || blocktime_dow =="all"
     timenames=names(scheduleplan)[schedulcolumn:end]
     blockcolstart=0
@@ -220,11 +222,19 @@ function adjustedresultcheck(plan::Array,runtime::Array,scheduleplan::DataFrame,
 
     for i in 1 :jobn
       for j in blockcolstart:blockcolend
-        if plan[i,j] != 0.0
-          adjustedresultcheckmastarflag[i,4]=false
+        if plan[i,j] in (0.0,0) 
+          adjustedresultcheckmastarflag[i,4]=true && adjustedresultcheckmastarflag[i,4]
+        else
+          adjustedresultcheckmastarflag[i,4]=false && adjustedresultcheckmastarflag[i,4]
         end
       end
     end
+  end
+
+  # 総合判定
+  if sum(adjustedresultcheckmastarflag) != size(adjustedresultcheckmastarflag,1)*size(adjustedresultcheckmastarflag,2)
+    plan=zeros(Int,jobn,timen)
+    adjustedresultcheckflag = false
   end
 
   result=scheduleplan[:,schedulcolumn:end ]
@@ -278,7 +288,7 @@ end
 uipathorchestratorschedulreadjustmentsub1(schedulesubplan,robotn,run_unit_time,jobn,timen,blocktime_start,blocktime_end,blocktime_dow;schedulcolumn::Int=6)
 
 # 処理概要
-スケジュール調整した結果が正しく結果かどうかチェック。作成されたスケジュールの妥当性チェック
+調整結果不足分のスケジュール作成、処理結果の整合性確認および整形。
 
 # 引数
 * `scheduleplan`:スケジュール作成のために必要な諸元

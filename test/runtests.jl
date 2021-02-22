@@ -64,7 +64,14 @@ end
 @testset "ブロックタイム設定" begin
     include(joinpath(@__DIR__, "common.jl"))
     scheduleplan,robotn,run_unit_time,jobn,timen,schedule,blocktime_start,blocktime_end,blocktime_dow=readprerequisite(InputFilePath,"parameters","schedule3")
-    robotn=1
+    robotn=2
     plan,runtime=uipathorchestratorschedulreadjustment(scheduleplan,robotn,run_unit_time,jobn,timen,schedule,blocktime_start,blocktime_end,blocktime_dow)
     @test sum(convert(Matrix,adjustedresultcheck(plan,runtime,scheduleplan,robotn,jobn,timen,schedule,blocktime_start,blocktime_end,blocktime_dow)[:,schedulcolumn:end-1] ) )== sum(runtime)
+
+    scheduleplan,robotn,run_unit_time,jobn,timen,schedule,blocktime_start,blocktime_end,blocktime_dow=readprerequisite(InputFilePath,"parameters","schedule4")
+    robotn=2
+    blocktime_dow="schedule4"
+    plan,runtime=uipathorchestratorschedulreadjustment(scheduleplan,robotn,run_unit_time,jobn,timen,schedule,blocktime_start,blocktime_end,blocktime_dow)
+    @test sum(convert(Matrix,adjustedresultcheck(plan,runtime,scheduleplan,robotn,jobn,timen,schedule,blocktime_start,blocktime_end,blocktime_dow)[:,schedulcolumn:end-1] ) )== 0
+
 end
