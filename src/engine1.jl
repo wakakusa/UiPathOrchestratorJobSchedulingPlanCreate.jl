@@ -204,7 +204,6 @@ function adjustedresultcheck(plan::Array,runtime::Array,scheduleplan::DataFrame,
   end
 
   ### ブロック時間設定チェック
-  adjustedresultcheckmastarflag[:,4] .=true #チェック状態を掛け算で算出するため
   if schedule == blocktime_dow || blocktime_dow =="all"
     timenames=names(scheduleplan)[schedulcolumn:end]
     blockcolstart=0
@@ -221,11 +220,14 @@ function adjustedresultcheck(plan::Array,runtime::Array,scheduleplan::DataFrame,
     end
 
     for i in 1 :jobn
+      subcheckflag=true #チェック状態を掛け算で算出するため
+
       for j in blockcolstart:blockcolend
-        if plan[i,j] in (0.0,0) 
-          adjustedresultcheckmastarflag[i,4]=true && adjustedresultcheckmastarflag[i,4]
+        if plan[i,j] in (0.0,0) && subcheckflag
+          adjustedresultcheckmastarflag[i,4]=true
         else
-          adjustedresultcheckmastarflag[i,4]=false && adjustedresultcheckmastarflag[i,4]
+          adjustedresultcheckmastarflag[i,4]=false
+          subcheckflag=false
         end
       end
     end
@@ -352,25 +354,25 @@ function uipathorchestratorschedulreadjustmentsub1(schedulesubplan::DataFrame,ro
    
    ### ブロックタイム設定
    if schedule == blocktime_dow || blocktime_dow =="all"
-     timenames=names(scheduleplan)[schedulcolumn:end]
-    　blockcolstart=0
- 　   blockcolend=0
+      timenames=names(scheduleplan)[schedulcolumn:end]
+      blockcolstart=0
+      blockcolend=0
 
-   　 for i in 1:length(timenames) 
-   　   if timenames[i] == blocktime_start
- 　       blockcolstart=i
- 　     end
+      for i in 1:length(timenames) 
+        if timenames[i] == blocktime_start
+          blockcolstart=i
+        end
 
- 　     if timenames[i] == blocktime_end
- 　       blockcolend=i
- 　     end
- 　   end
+        if timenames[i] == blocktime_end
+          blockcolend=i
+        end
+      end
 
-　    for i in 1 :jobn
- 　　   for j in blockcolstart:blockcolend
- 　       JuMP.@constraint(msub1, s[i,j] == 0.0 )
- 　     end
- 　   end
+      for i in 1 :jobn
+        for j in blockcolstart:blockcolend
+          JuMP.@constraint(msub1, s[i,j] == 0.0 )
+        end
+      end
    end
 
    ## ソルバーの実行
