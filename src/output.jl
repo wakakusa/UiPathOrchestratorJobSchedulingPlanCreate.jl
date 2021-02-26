@@ -8,6 +8,7 @@
 # 引数
 * `plan`:adjustedresultcheckの実行結果を指定
 * `schedulcolumn`:スケジュールON,OFF開始列を指定（デフォルト：６）
+* `fontfamily`:フォントを指定
 
 # 結果（戻り値）
 グラフ出力
@@ -24,7 +25,7 @@ end
 
 
 """
-    plotplangr(plan::DataFrame;schedulcolumn::Int=6)
+    plotplangr(plan::DataFrame;schedulcolumn::Int=6,fontfamily="serif-roman")
 
 # 処理概要
 スケジュール調整した結果をGRを使ってグラフに出力
@@ -32,6 +33,7 @@ end
 # 引数
 * `plan`:adjustedresultcheckの実行結果を指定
 * `schedulcolumn`:スケジュールON,OFF開始列を指定（デフォルト：６）
+* `fontfamily`:フォントを指定
 
 # 結果（戻り値）
 * グラフ出力
@@ -55,6 +57,7 @@ end
 # 引数
 * `plan`:adjustedresultcheckの実行結果を指定
 * `schedulcolumn`:スケジュールON,OFF開始列を指定（デフォルト：６）
+* `fontfamily`:フォントを指定
 
 # 結果（戻り値）
 * グラフ出力

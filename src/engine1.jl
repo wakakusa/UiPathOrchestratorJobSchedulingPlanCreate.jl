@@ -231,6 +231,8 @@ function adjustedresultcheck(plan::Array,runtime::Array,scheduleplan::DataFrame,
         end
       end
     end
+  else
+    adjustedresultcheckmastarflag[:,4] .=true
   end
 
   # 総合判定
