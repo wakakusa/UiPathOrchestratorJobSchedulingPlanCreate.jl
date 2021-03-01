@@ -4,6 +4,6 @@ using XLSX
 using UiPathOrchestratorJobSchedulingPlanCreate
 
 # Write your own tests here.
-@testset "UiPathOrchestratorJobSchedulingPlanCreate.jl 基本機能" begin
+@testset "UiPathOrchestratorJobSchedulingPlanCreate.jl" begin
 @test true
 end
