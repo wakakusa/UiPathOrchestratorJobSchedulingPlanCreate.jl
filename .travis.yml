@@ -4,6 +4,7 @@ notifications:
   email: false
 julia:
   - 1.5
+  - nightly
 os:
   - linux
   - osx
@@ -14,6 +15,7 @@ jobs:
   fast_finish: true
   allow_failures:
     - julia: nightly
+    - OS: windows
 after_success:
 #  - |
 #    julia -e '
