@@ -1,5 +1,5 @@
 """
-    plotplanmaster(plan::DataFrame;schedulcolumn::Int=6,fontfamily="serif-roman")
+    plotplanmaster(plan::DataFrame;schedulcolumn::Int=6,fontfamily="serif-roman",format=:png)
 
 # 処理概要
 スケジュール調整した結果をグラフに出力
@@ -9,15 +9,16 @@
 * `plan`:adjustedresultcheckの実行結果を指定
 * `schedulcolumn`:スケジュールON,OFF開始列を指定（デフォルト：６）
 * `fontfamily`:フォントを指定
+* `format`:グラフ出力形式　:png,:svg
 
 # 結果（戻り値）
 グラフ出力
 """
-function plotplanmaster(plan::DataFrame;schedulcolumn::Int=6,fontfamily="serif-roman")
+function plotplanmaster(plan::DataFrame;schedulcolumn::Int=6,fontfamily="serif-roman",format=:png)
   xs = map(String,names(plan)[schedulcolumn:end] )
   ys = map(String,plan[:,:jobname])
 
-  plot=Plots.heatmap(xs, ys, convert(Matrix,plan[:,schedulcolumn:end]), legend=false,c=cgrad([:white,:blue]),fontfamily=fontfamily)
+  plot=Plots.heatmap(xs, ys, convert(Matrix,plan[:,schedulcolumn:end]), legend=false,c=cgrad([:white,:blue]),fontfamily=fontfamily,format=format)
 
   return plot
 
@@ -25,7 +26,7 @@ end
 
 
 """
-    plotplangr(plan::DataFrame;schedulcolumn::Int=6,fontfamily="serif-roman")
+    plotplangr(plan::DataFrame;schedulcolumn::Int=6,fontfamily="serif-roman",format=:png)
 
 # 処理概要
 スケジュール調整した結果をGRを使ってグラフに出力
@@ -34,22 +35,23 @@ end
 * `plan`:adjustedresultcheckの実行結果を指定
 * `schedulcolumn`:スケジュールON,OFF開始列を指定（デフォルト：６）
 * `fontfamily`:フォントを指定
+* `format`:グラフ出力形式　:png,:svg
 
 # 結果（戻り値）
 * グラフ出力
 """
-function plotplangr(plan::DataFrame;schedulcolumn::Int=6,fontfamily="serif-roman")
+function plotplangr(plan::DataFrame;schedulcolumn::Int=6,fontfamily="serif-roman",format=:png)
   ENV["GKS_ENCODING"]="utf-8"
   gr()
 
-  plot=plotplanmaster(plan,schedulcolumn=schedulcolumn,fontfamily=fontfamily)
+  plot=plotplanmaster(plan,schedulcolumn=schedulcolumn,fontfamily=fontfamily,format=format)
   gui(plot)
   return plot
 end
 
 
 """
-    plotplanplotlyjs(plan::DataFrame;schedulcolumn::Int=6,fontfamily="serif-roman")
+    plotplanplotlyjs(plan::DataFrame;schedulcolumn::Int=6,fontfamily="serif-roman",format=:png)
 
 # 処理概要
 スケジュール調整した結果をPlotlyJSを使ってグラフに出力
@@ -58,14 +60,15 @@ end
 * `plan`:adjustedresultcheckの実行結果を指定
 * `schedulcolumn`:スケジュールON,OFF開始列を指定（デフォルト：６）
 * `fontfamily`:フォントを指定
+* `format`:グラフ出力形式　:png,:svg
 
 # 結果（戻り値）
 * グラフ出力
 """
-function plotplanplotlyjs(plan::DataFrame;schedulcolumn::Int=6,fontfamily="serif-roman")
+function plotplanplotlyjs(plan::DataFrame;schedulcolumn::Int=6,fontfamily="serif-roman",format=:png)
   plotlyjs()
 
-  plot=plotplanmaster(plan,schedulcolumn=schedulcolumn,fontfamily=fontfamily)
+  plot=plotplanmaster(plan,schedulcolumn=schedulcolumn,fontfamily=fontfamily,format=format)
   gui(plot)
   return plot
 end
