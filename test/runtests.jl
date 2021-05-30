@@ -14,13 +14,13 @@ using UiPathOrchestratorJobSchedulingPlanCreate
     output=DataFrames.DataFrame(XLSX.readtable(OutputFilePath, "v0.19.2")...)
     plan,runtime=uipathorchestratorschedulreadjustment(scheduleplan,robotn,run_unit_time,jobn,timen,schedule,blocktime_start,blocktime_end,blocktime_dow)
     plan=adjustedresultcheck(plan,runtime,scheduleplan,robotn,jobn,timen,schedule,blocktime_start,blocktime_end,blocktime_dow)
-    @test sum(convert(Matrix,plan[:,schedulcolumn:end-1])) == sum(runtime)
-#    @test convert(Matrix,plan[:,schedulcolumn:end-1]) == convert(Matrix,output[:,schedulcolumn:end-1])
-    @test convert(Matrix,plan[1:7,schedulcolumn:end-1]) == convert(Matrix,output[1:7,schedulcolumn:end-1])
-    @test convert(Matrix,plan[9:10,schedulcolumn:end-1]) == convert(Matrix,output[9:10,schedulcolumn:end-1])
-    @test sum(convert(Matrix,uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="off")[:,schedulcolumn:end-1])) == sum(runtime)
-    @test sum(convert(Matrix,uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="GR")[:,schedulcolumn:end-1])) == sum(runtime)
-    @test sum(convert(Matrix,uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="それ以外")[:,schedulcolumn:end-1])) == sum(runtime)
+    @test sum(Matrix(plan[:,schedulcolumn:end-1])) == sum(runtime)
+    @test Matrix(plan[:,schedulcolumn:end-1]) == Matrix(output[:,schedulcolumn:end-1])
+    @test Matrix(plan[1:7,schedulcolumn:end-1]) == Matrix(output[1:7,schedulcolumn:end-1])
+    @test Matrix(plan[9:10,schedulcolumn:end-1]) == Matrix(output[9:10,schedulcolumn:end-1])
+    @test sum(Matrix(uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="off")[:,schedulcolumn:end-1])) == sum(runtime)
+#    @test sum(Matrix(uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="GR")[:,schedulcolumn:end-1])) == sum(runtime)
+    @test sum(Matrix(uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="それ以外")[:,schedulcolumn:end-1])) == sum(runtime)
     @test uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="それ以外",checkreturn=true)[2]
     @test createtimeset()[1][1]=="00:00"
 
@@ -42,7 +42,7 @@ using UiPathOrchestratorJobSchedulingPlanCreate
     Pkg.add("Blink")
     Pkg.add("ORCA")
     using PlotlyJS
-    @test sum(convert(Matrix,uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="PlotlyJS")[:,schedulcolumn:end-1])) == sum(runtime)
+    @test sum(Matrix(uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="PlotlyJS")[:,schedulcolumn:end-1])) == sum(runtime)
 =#
 end
 
@@ -50,7 +50,7 @@ end
     include(joinpath(@__DIR__, "common.jl"))
     robotn=1
    plan,runtime=uipathorchestratorschedulreadjustment(scheduleplan,robotn,run_unit_time,jobn,timen,schedule,blocktime_start,blocktime_end,blocktime_dow)
-    @test convert(Matrix,adjustedresultcheck(plan,runtime,scheduleplan,robotn,jobn,timen,schedule,blocktime_start,blocktime_end,blocktime_dow)[:,schedulcolumn:end-1] ) == zeros(Int,jobn,timen)
+    @test Matrix(adjustedresultcheck(plan,runtime,scheduleplan,robotn,jobn,timen,schedule,blocktime_start,blocktime_end,blocktime_dow)[:,schedulcolumn:end-1] ) == zeros(Int,jobn,timen)
 end
 
 @testset "特定範囲内に収める" begin
@@ -58,7 +58,7 @@ end
     scheduleplan,robotn,run_unit_time,jobn,timen,schedule,blocktime_start,blocktime_end,blocktime_dow=readprerequisite(InputFilePath,"parameters","schedule2")
     robotn=1
     plan,runtime=uipathorchestratorschedulreadjustment(scheduleplan,robotn,run_unit_time,jobn,timen,schedule,blocktime_start,blocktime_end,blocktime_dow)
-    @test sum(convert(Matrix,adjustedresultcheck(plan,runtime,scheduleplan,robotn,jobn,timen,schedule,blocktime_start,blocktime_end,blocktime_dow)[:,schedulcolumn:end-1] ) )== sum(runtime)
+    @test sum(Matrix(adjustedresultcheck(plan,runtime,scheduleplan,robotn,jobn,timen,schedule,blocktime_start,blocktime_end,blocktime_dow)[:,schedulcolumn:end-1] ) )== sum(runtime)
 end
 
 @testset "ブロックタイム設定" begin
@@ -66,13 +66,13 @@ end
     scheduleplan,robotn,run_unit_time,jobn,timen,schedule,blocktime_start,blocktime_end,blocktime_dow=readprerequisite(InputFilePath,"parameters","schedule3")
     robotn=2
     plan,runtime=uipathorchestratorschedulreadjustment(scheduleplan,robotn,run_unit_time,jobn,timen,schedule,blocktime_start,blocktime_end,blocktime_dow)
-    @test sum(convert(Matrix,adjustedresultcheck(plan,runtime,scheduleplan,robotn,jobn,timen,schedule,blocktime_start,blocktime_end,blocktime_dow)[:,schedulcolumn:end-1] ) )== sum(runtime)
+    @test sum(Matrix(adjustedresultcheck(plan,runtime,scheduleplan,robotn,jobn,timen,schedule,blocktime_start,blocktime_end,blocktime_dow)[:,schedulcolumn:end-1] ) )== sum(runtime)
 
     # ブロックタイム内に実行指定がある場合
     scheduleplan,robotn,run_unit_time,jobn,timen,schedule,blocktime_start,blocktime_end,blocktime_dow=readprerequisite(InputFilePath,"parameters","schedule4")
     robotn=2
     blocktime_dow="schedule4"
     plan,runtime=uipathorchestratorschedulreadjustment(scheduleplan,robotn,run_unit_time,jobn,timen,schedule,blocktime_start,blocktime_end,blocktime_dow)
-    @test sum(convert(Matrix,adjustedresultcheck(plan,runtime,scheduleplan,robotn,jobn,timen,schedule,blocktime_start,blocktime_end,blocktime_dow)[:,schedulcolumn:end-1] ) )== 0
+    @test sum(Matrix(adjustedresultcheck(plan,runtime,scheduleplan,robotn,jobn,timen,schedule,blocktime_start,blocktime_end,blocktime_dow)[:,schedulcolumn:end-1] ) )== 0
 
 end

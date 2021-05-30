@@ -19,7 +19,7 @@ XLSX = "fdbf4ff8-1666-58a4-91e7-1b58723a45e0"
 
 [compat]
 Cbc = ">=0.7.1"
-DataFrames = ">=0.22.5"
+DataFrames = ">=1.0"
 GR = ">=0.55.0"
 Ipopt = ">=0.6.5"
 JuMP = ">=0.21.6"
