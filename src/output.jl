@@ -18,7 +18,7 @@ function plotplanmaster(plan::DataFrame;schedulcolumn::Int=6,fontfamily="serif-r
   xs = map(String,names(plan)[schedulcolumn:end] )
   ys = map(String,plan[:,:jobname])
 
-  plot=Plots.heatmap(xs, ys, convert(Matrix,plan[:,schedulcolumn:end]), legend=false,c=cgrad([:white,:blue]),fontfamily=fontfamily,format=format)
+  plot=Plots.heatmap(xs, ys, Matrix(plan[:,schedulcolumn:end]), legend=false,c=cgrad([:white,:blue]),fontfamily=fontfamily,format=format)
 
   return plot
 

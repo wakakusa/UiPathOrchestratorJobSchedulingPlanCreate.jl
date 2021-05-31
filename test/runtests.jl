@@ -19,7 +19,7 @@ using UiPathOrchestratorJobSchedulingPlanCreate
     @test Matrix(plan[1:7,schedulcolumn:end-1]) == Matrix(output[1:7,schedulcolumn:end-1])
     @test Matrix(plan[9:10,schedulcolumn:end-1]) == Matrix(output[9:10,schedulcolumn:end-1])
     @test sum(Matrix(uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="off")[:,schedulcolumn:end-1])) == sum(runtime)
-#    @test sum(Matrix(uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="GR")[:,schedulcolumn:end-1])) == sum(runtime)
+    @test sum(Matrix(uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="GR")[:,schedulcolumn:end-1])) == sum(runtime)
     @test sum(Matrix(uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="それ以外")[:,schedulcolumn:end-1])) == sum(runtime)
     @test uipathorchestratorschedulrecreate(InputFilePath,"parameters","schedule",plotengine="それ以外",checkreturn=true)[2]
     @test createtimeset()[1][1]=="00:00"
