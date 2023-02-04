@@ -168,6 +168,7 @@ function adjustedresultcheck(plan::Array,runtime::Array,scheduleplan::DataFrame,
   adjustedresultcheckflag=true
   adjustedresultcheckmastarflag=Array{Bool}(undef,jobn,4) # #1:ジョブごとに実行時間確保されているかチェック,#2:ロボット数超過,#3:処理時間が連続しているか,#4:ブロック時間が設定できているか
   adjustedresultcheckmastarflag .= false
+  adjustedresultcheckmastarflag=DataFrame(adjustedresultcheckmastarflag,[:ジョブごとに実行時間確保されているか,:ロボット数超過,:処理時間が連続しているか,:ブロック時間が設定できているか])
 
   #ジョブごとに実行時間確保されているかチェック
   for i in 1:jobn
@@ -236,7 +237,7 @@ function adjustedresultcheck(plan::Array,runtime::Array,scheduleplan::DataFrame,
   end
 
   # 総合判定
-  if sum(adjustedresultcheckmastarflag) != size(adjustedresultcheckmastarflag,1)*size(adjustedresultcheckmastarflag,2)
+  if sum(Tables.Matrix(adjustedresultcheckmastarflag)) != size(adjustedresultcheckmastarflag,1)*size(adjustedresultcheckmastarflag,2)
     plan=zeros(Int,jobn,timen)
     adjustedresultcheckflag = false
   end

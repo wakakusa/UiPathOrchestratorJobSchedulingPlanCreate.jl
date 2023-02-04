@@ -15,8 +15,8 @@
 パラメータの読込み結果を出力
 """
 function readprerequisite(ExcelFilePath::String,parameters::String,schedule::String;schedulcolumn::Int=6)
-  parameters=DataFrames.DataFrame(XLSX.readtable(ExcelFilePath, parameters)...)
-  scheduleplan=DataFrames.DataFrame(XLSX.readtable(ExcelFilePath, schedule)...)
+  parameters=DataFrames.DataFrame(XLSX.readtable(ExcelFilePath, parameters))
+  scheduleplan=DataFrames.DataFrame(XLSX.readtable(ExcelFilePath, schedule))
 
   # 前提条件設定
   robotn=parameters[parameters[:,:parameter] .== "all_run_robot",:value][1] #ロボット
